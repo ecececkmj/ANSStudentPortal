@@ -1,0 +1,677 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ==========================================================================
+   RESET & BASE STYLES (Full Screen Fit)
+   ========================================================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100vw;
+  min-height: 100vh;
+  font-family: 'Inter', 'Segoe UI', Tahoma, Arial, sans-serif;
+  line-height: 1.5;
+  background-color: #000; /* Changed from #1a0508 */
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  transition: background 0.4s ease;
+}
+
+/* Homepage-specific background image state applied via body class */
+body.home-background {
+  background: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)),
+              url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat fixed;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ==========================================================================
+   HEADER & TOP NAVIGATION
+   ========================================================================== */
+header.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+
+/* Top-Left: Small Logo stacked vertically on top of 3-line hamburger menu */
+.nav-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.nav-small-logo {
+  width: 36px;
+  height: 36px;
+  background-color: #FFD700; /* School Gold */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+}
+
+.nav-small-logo svg {
+  width: 20px;
+  height: 20px;
+  fill: #800000; /* School Maroon */
+}
+
+.hamburger-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 32px;
+  height: 22px;
+  padding: 0;
+  z-index: 101;
+}
+
+.hamburger-btn span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: #FFD700;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Top-Right: Search Bar, LOG IN, and SIGN UP Buttons */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  background-color: rgba(60, 10, 15, 0.9);
+  border: 2px solid #FFD700;
+  border-radius: 6px;
+  padding: 8px 36px 8px 14px;
+  color: #ffffff;
+  font-size: 0.9rem;
+  width: 220px;
+  outline: none;
+  transition: width 0.3s ease;
+}
+
+.search-input::placeholder {
+  color: #dddddd;
+}
+
+.search-input:focus {
+  width: 280px;
+}
+
+.search-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #FFD700;
+  display: flex;
+  align-items: center;
+}
+
+.search-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: #FFD700;
+}
+
+.auth-btn {
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  border: none;
+}
+
+.auth-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.btn-login {
+  background-color: #FFD700;
+  color: #800000;
+}
+
+.btn-signup {
+  background-color: #800000;
+  color: #ffffff;
+  border: 1px solid #FFD700;
+}
+
+/* ==========================================================================
+   SIDEBAR NAVIGATION DRAWER
+   ========================================================================== */
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  height: 100vh;
+  background-color: #5c0612;
+  border-right: 4px solid #FFD700;
+  box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  transition: left 0.4s ease;
+  padding: 90px 30px 30px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.nav-drawer.open {
+  left: 0;
+}
+
+.drawer-title {
+  color: #FFD700;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+  padding-bottom: 10px;
+}
+
+.drawer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.drawer-links a {
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+  display: block;
+}
+
+.drawer-links a:hover {
+  background-color: #FFD700;
+  color: #800000;
+}
+
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  display: none;
+}
+
+.drawer-overlay.active {
+  display: block;
+}
+
+/* ==========================================================================
+   SINGLE-PAGE VIEW SECTIONS CONTAINER
+   ========================================================================== */
+.view-section {
+    width: 100% !important; 
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+}
+
+.view-section.active-view {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- HOMEPAGE HERO LAYOUT (Two-Column Split over Background) --- */
+.home-container {
+  max-width: 1300px;
+  width: 100%;
+  margin: auto;
+  padding: 110px 20px 40px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+  flex-grow: 1;
+}
+
+/* Left Side: Stacked & Left-Aligned Branding & Info */
+.school-info-stack {
+  background: linear-gradient(135deg, #4a0d13 0%, #2b0307 100%);
+  border: 10px solid #361115;
+  outline: 2px solid #5a1d22;
+  border-radius: 8px;
+  padding: 40px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+}
+
+.school-large-logo {
+  width: 90px;
+  height: 90px;
+  background: radial-gradient(circle, #ffe066 0%, #FFD700 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  margin-bottom: 20px;
+}
+
+.school-large-logo svg {
+  width: 52px;
+  height: 52px;
+  fill: #800000;
+}
+
+.portal-main-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #FFD700;
+  text-transform: none;
+  line-height: 1.2;
+  margin-bottom: 10px;
+  letter-spacing: 0;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+}
+
+.portal-sub-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 25px;
+}
+
+.school-contact-details {
+  border-top: 1px solid rgba(255, 215, 0, 0.3);
+  padding-top: 20px;
+  width: 100%;
+  font-size: 0.95rem;
+  color: #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Right Side: Clickable Feature Cards Grid */
+.cards-grid-right {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.portal-card {
+  background-color: rgba(59, 13, 19, 0.92);
+  border-top: 4px solid #FFD700;
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.portal-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+  background-color: rgba(74, 17, 24, 0.98);
+}
+
+.portal-card h3 {
+  color: #FFD700;
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-transform: none;
+}
+
+.card-content-preview {
+  font-size: 0.875rem;
+  color: #cccccc;
+  line-height: 1.4;
+  flex-grow: 1;
+  margin-bottom: 12px;
+}
+
+.preview-item {
+  margin-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 4px;
+}
+
+.preview-date {
+  color: #FFD700;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+/* School Gallery Card Sample Image Placeholder */
+.gallery-preview-img {
+  width: 100%;
+  height: 85px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+}
+
+.gallery-caption {
+  font-size: 0.875rem;
+  color: #FFD700;
+  font-style: italic;
+}
+
+/* Mini Calendar Grid Preview */
+.mini-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  text-align: center;
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
+
+.mini-calendar div {
+  padding: 2px 0;
+}
+
+.mini-calendar .cal-header {
+  font-weight: bold;
+  color: #FFD700;
+}
+
+.mini-calendar .cal-day {
+  color: #dddddd;
+}
+
+.mini-calendar .cal-day.active {
+  background-color: #FFD700;
+  color: #800000;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.card-hover-footer {
+  font-size: 0.875rem;
+  color: #FFD700;
+  font-weight: 600;
+  text-transform: none;
+  margin-top: auto;
+}
+
+/* --- DEDICATED FULL-SCREEN & FULL-WIDTH SECTION VIEW PAGES --- */
+.section-full-wrapper {
+  width: 100vw;
+  min-height: 100vh;
+  background-color: transparent; /* Changed from #240508 */
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 110px 60px 60px 60px; 
+}
+
+.back-home-btn {
+  background-color: #FFD700;
+  color: #800000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 30px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  font-size: 0.95rem;
+}
+
+.back-home-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.section-page-title {
+  font-size: 2.4rem;
+  color: #FFD700;
+  margin-bottom: 25px;
+  border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+  padding-bottom: 15px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.section-page-body {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #f0f0f0;
+  max-width: 1200px;
+}
+
+.section-page-body p {
+  margin-bottom: 20px;
+}
+
+.section-page-body ul {
+  margin-left: 25px;
+  margin-bottom: 20px;
+}
+
+.section-page-body li {
+  margin-bottom: 10px;
+}
+
+/* ==========================================================================
+   MODAL POPUP WINDOW (Login / Signup / Search)
+   ========================================================================== */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-box {
+  background-color: #4a1118;
+  border: 3px solid #FFD700;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.modal-backdrop.active .modal-box {
+  transform: translateY(0);
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #FFD700;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+.modal-title {
+  color: #FFD700;
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.modal-body {
+  color: #f0f0f0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+footer {
+  background-color: #3b0d13;
+  text-align: center;
+  padding: 18px;
+  font-size: 0.875rem;
+  border-top: 3px solid #FFD700;
+  color: #dddddd;
+  margin-top: auto;
+  width: 100vw;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (Media Queries)
+   ========================================================================== */
+@media (max-width: 900px) {
+  .home-container {
+    grid-template-columns: 1fr;
+    margin-top: 90px;
+  }
+  .cards-grid-right {
+    grid-template-columns: 1fr 1fr;
+  }
+  .section-full-wrapper {
+    padding: 100px 25px 40px 25px;
+  }
+}
+
+@media (max-width: 600px) {
+  header.top-nav {
+    padding: 15px 20px;
+  }
+  .search-input {
+    width: 140px;
+  }
+  .search-input:focus {
+    width: 170px;
+  }
+  .cards-grid-right {
+    grid-template-columns: 1fr;
+  }
+  .auth-btn {
+    padding: 6px 10px;
+    font-size: 0.875rem;
+  }
+}
+
+/* --- PERMANENT SIDEBAR LAYOUT --- */
+body {
+    display: flex;
+    flex-direction: row;
+}
+
+.permanent-sidebar {
+    width: 120px; /* Slimmer profile like the image */
+    height: 100vh;
+    background: rgba(20, 2, 5, 0.95);
+    border-right: 2px solid #FFD700;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    z-index: 1000;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.5);
+}
+
+.main-content-wrapper {
+    margin-left: 120px !important;
+    width: calc(100vw - 120px) !important; /* Force exact calculation based on screen size */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Instantly kills any horizontal pushing/scrolling */
+}
+
+.side-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.875rem;
+    padding: 15px 10px;
+    width: 100%;
+    transition: 0.2s;
+    cursor: pointer;
+    text-align: center;
+}
+
+.side-link:hover, .side-link.active {
+    background: rgba(255, 215, 0, 0.1);
+    color: #FFD700;
+    border-left: 4px solid #FFD700;
+}
+
+.side-icon {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+/* Form controls use the same font */
+button, input, select, textarea {
+  font-family: inherit;
+}

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Admin Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        html { font-size: 16px; }
+        body, button, input, select, textarea { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+        body { font-size: 1rem; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+
+        /* Same header box as the teacher / student pages */
+        .page-header-box { background: linear-gradient(135deg, rgba(59, 13, 19, 0.95), rgba(20, 2, 5, 0.98)); padding: 20px 25px; border-radius: 12px; border-left: 5px solid #FFD700; box-shadow: 0 8px 24px rgba(0,0,0,0.5); margin-bottom: 25px; }
+        .page-header-box h2 { color: #FFD700; margin: 0; font-size: clamp(1.5rem, 4vw, 1.8rem); text-transform: uppercase; letter-spacing: 1px; }
+        .alert-banner { background: #17a2b8; color: white; padding: 15px; border-radius: 6px; margin-bottom: 20px; border-left: 5px solid #117a8b; font-weight: bold; }
+
+        .admin-wrap { width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .admin-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start; }
+        .card { background: rgba(59, 13, 19, 0.95); padding: 28px; border-radius: 8px; border-top: 4px solid #FFD700; box-shadow: 0 8px 24px rgba(0,0,0,0.5); min-width: 0; }
+        .card h2 { color: #FFD700; margin: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; font-size: 1.3rem; }
+        .field-label { color: #ccc; font-size: 0.875rem; font-weight: bold; margin-bottom: 5px; display: block; }
+
+        .lms-input { width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(20, 2, 5, 0.9); border: 1px solid #FFD700; border-radius: 6px; color: white; outline: none; font-size: 1rem; }
+        .btn-gold { background-color: #FFD700; color: #800000; padding: 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1.05rem; width: 100%; display: block; text-align: center; }
+        .btn-gold:hover { transform: translateY(-2px); background-color: #ffea75; }
+        .danger-btn { background: #e74c3c; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.875rem; font-weight: bold; transition: 0.2s; }
+        .danger-btn:hover { background: #c0392b; transform: translateY(-2px); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(20, 2, 5, 0.6); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 215, 0, 0.2); }
+        th, td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left; color: white; }
+        th { background: rgba(0,0,0,0.6); color: #FFD700; font-size: 0.875rem; }
+        tr:hover { background: rgba(255,255,255,0.05); }
+        .table-scroll { max-height: 400px; overflow: auto; border: 1px solid rgba(255,215,0,0.2); border-radius: 6px; margin-top: 15px; }
+        .table-scroll table { margin-top: 0; border: none; }
+
+        /* ===== PHONE MENU (same as the other dashboards) ===== */
+        .mobile-menu-btn, .mobile-menu-overlay { display: none; }
+        @media (max-width: 900px) { .admin-panel { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .mobile-menu-btn { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; position: fixed; top: 12px; right: 12px; width: 46px; height: 46px; padding: 0; background: rgba(20, 2, 5, 0.95); border: 2px solid #FFD700; border-radius: 10px; cursor: pointer; z-index: 10002; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+            .mobile-menu-btn span { display: block; width: 22px; height: 3px; background: #FFD700; border-radius: 2px; transition: transform 0.3s ease, opacity 0.3s ease; }
+            body.menu-open .mobile-menu-btn span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+            body.menu-open .mobile-menu-btn span:nth-child(2) { opacity: 0; }
+            body.menu-open .mobile-menu-btn span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+            body.menu-open { overflow: hidden; }
+            body.menu-open .mobile-menu-overlay { display: block; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; }
+
+            body .permanent-sidebar { box-sizing: border-box !important; position: fixed !important; top: 0 !important; right: 0 !important; left: auto !important; bottom: 0 !important; width: min(280px, 80vw) !important; height: 100% !important; justify-content: flex-start !important; align-items: stretch !important; gap: 4px !important; padding: 70px 16px 20px !important; overflow-y: auto !important; border-right: none !important; border-left: 2px solid #FFD700 !important; box-shadow: -8px 0 25px rgba(0,0,0,0.6) !important; z-index: 10001 !important; transform: translateX(105%); transition: transform 0.3s ease; }
+            body.menu-open .permanent-sidebar { transform: translateX(0); }
+            body .permanent-sidebar > img { align-self: center; margin: 0 0 10px 0 !important; }
+            body .permanent-sidebar > div { align-self: center; }
+            body .permanent-sidebar .side-link { width: 100% !important; flex-direction: row !important; justify-content: flex-start !important; gap: 14px !important; padding: 12px 14px !important; font-size: 1rem !important; border-radius: 8px !important; }
+            body .permanent-sidebar .side-icon { margin-bottom: 0 !important; }
+            body .permanent-sidebar a[href*="logout"] { margin-top: auto !important; }
+
+            body .main-content-wrapper { margin-left: 0 !important; width: 100% !important; padding-top: 64px !important; padding-bottom: 20px !important; }
+            .admin-wrap { padding: 12px; }
+            .card { padding: 20px 15px; }
+            .table-scroll th, .table-scroll td, .card > table th, .card > table td { white-space: nowrap; }
+            .card > table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body style="background: url('{{ url_for('static', filename='bg.jpg') }}') no-repeat center center fixed; background-size: cover; background-color: #000; margin: 0; min-height: 100vh;">
+
+    <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- PERMANENT SIDEBAR (same as the teacher dashboard) -->
+    <aside class="permanent-sidebar">
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo" style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid #FFD700; margin-bottom: 20px; object-fit: cover;">
+
+        <div style="width: 40px; height: 40px; background: #e74c3c; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; margin-bottom: 5px;">A</div>
+        <div style="color: #FFD700; font-size: 0.75rem; margin-bottom: 20px; text-align: center;">Master Admin</div>
+
+        <a class="side-link" href="{{ url_for('teacher_dashboard') }}">
+            <span class="side-icon" style="margin-bottom: 5px; display: flex;">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+            </span>
+            Dashboard
+        </a>
+
+        <a class="side-link active" href="{{ url_for('admin_dashboard') }}">
+            <span class="side-icon" style="margin-bottom: 5px; display: flex;">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            </span>
+            Accounts
+        </a>
+
+        <a href="{{ url_for('logout') }}" class="side-link" style="margin-top: auto; margin-bottom: 20px; color: #e74c3c;" onclick="return confirm('Are you sure you want to log out of your account?');">
+            <span class="side-icon" style="margin-bottom: 5px; display: flex;">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+            </span>
+            Log Out
+        </a>
+    </aside>
+
+    <div class="main-content-wrapper">
+        <main class="view-section active-view">
+            <div class="admin-wrap">
+
+                <div class="page-header-box">
+                    <h2>Master Admin Control Panel</h2>
+                </div>
+
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}<div class="alert-banner">{{ messages[0] }}</div>{% endif %}
+                {% endwith %}
+
+                <div class="admin-panel">
+                    <!-- Create accounts -->
+                    <div class="card">
+                        <h2>Create Account</h2>
+                        <form method="POST" action="{{ url_for('admin_add_user') }}" style="margin-top: 20px;">
+                            <label class="field-label">Account Type</label>
+                            <select name="role" id="roleSelect" class="lms-input" required onchange="toggleStudentFields()">
+                                <option value="student">Student</option>
+                                <option value="teacher">Teacher</option>
+                                <option value="sslg">SSLG Officer</option>
+                            </select>
+
+                            <label class="field-label">Login Details</label>
+                            <input type="text" name="username" class="lms-input" placeholder="Enter Username" required>
+                            <input type="password" name="password" class="lms-input" placeholder="Enter Password" required>
+
+                            <div id="studentFields">
+                                <label class="field-label">Student Profile Data</label>
+                                <input type="text" name="full_name" class="lms-input" placeholder="Full Name (e.g. John Doe)">
+                                <input type="text" name="lrn" class="lms-input" placeholder="12-Digit LRN">
+                            </div>
+
+                            <button type="submit" class="btn-gold" style="margin-top: 10px;">Create Account</button>
+                        </form>
+                    </div>
+
+                    <!-- Manage accounts -->
+                    <div class="card">
+                        <h2>Manage Accounts</h2>
+
+                        <h3 style="color: white; margin: 20px 0 0 0; font-size: 1.1rem;">Teachers</h3>
+                        <table>
+                            <tr><th>Username</th><th>Action</th></tr>
+                            {% for t in teachers %}
+                            <tr>
+                                <td><strong>{{ t.username }}</strong></td>
+                                <td><form method="POST" action="{{ url_for('admin_delete_user', role='teacher', user_id=t.id) }}" style="margin:0;" onsubmit="return confirm('WARNING: Delete this teacher permanently?');"><button type="submit" class="danger-btn">Delete</button></form></td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+
+                        <h3 style="color: white; margin: 30px 0 0 0; font-size: 1.1rem;">Students</h3>
+                        <div class="table-scroll">
+                            <table>
+                                <tr><th>Name</th><th>LRN</th><th>Action</th></tr>
+                                {% for s in students %}
+                                <tr>
+                                    <td><strong>{{ s.full_name }}</strong></td>
+                                    <td style="color: #aaa; font-size: 0.9rem;">{{ s.lrn }}</td>
+                                    <td><form method="POST" action="{{ url_for('admin_delete_user', role='student', user_id=s.id) }}" style="margin:0;" onsubmit="return confirm('WARNING: Delete this student permanently?');"><button type="submit" class="danger-btn">Delete</button></form></td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleStudentFields() {
+            const role = document.getElementById('roleSelect').value;
+            const sf = document.getElementById('studentFields');
+            const hide = (role === 'teacher' || role === 'sslg');
+            sf.style.display = hide ? 'none' : 'block';
+            sf.querySelectorAll('input').forEach(i => i.required = !hide);
+        }
+        window.addEventListener('load', toggleStudentFields);
+
+        // Phone menu
+        (function () {
+            const btn = document.getElementById('mobileMenuBtn');
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const setOpen = (open) => document.body.classList.toggle('menu-open', open);
+            btn.addEventListener('click', () => setOpen(!document.body.classList.contains('menu-open')));
+            overlay.addEventListener('click', () => setOpen(false));
+        })();
+    </script>
+</body>
+</html>

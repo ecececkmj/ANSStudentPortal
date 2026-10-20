@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSLG Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        * { box-sizing: border-box; }
+        body, html { margin: 0 !important; padding: 0 !important; width: 100% !important; min-height: 100vh !important; display: block !important; overflow-x: hidden !important; }
+        .wrap { max-width: 1200px; margin: 20px auto; padding: 0 20px 40px; }
+        .top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 25px; }
+        .card { background: rgba(59, 13, 19, 0.95); padding: 25px; border-radius: 8px; border-top: 3px solid #FFD700; box-shadow: 0 8px 24px rgba(0,0,0,0.5); color: white; }
+        .card h2 { color: #FFD700; margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        .lms-input { width: 100%; padding: 12px; margin-bottom: 12px; background: rgba(20, 2, 5, 0.9); border: 1px solid #FFD700; border-radius: 6px; color: white; font-size: 1rem; }
+        label { color: #ccc; font-size: 0.875rem; font-weight: bold; display: block; margin-bottom: 4px; }
+        .btn-gold { background: #FFD700; color: #800000; padding: 13px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem; }
+        .btn-gold:hover { background: #ffea75; }
+        .danger-btn { background: #e74c3c; color: white; border: none; padding: 7px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.875rem; }
+        .link-btn { display: inline-block; background: rgba(0,0,0,0.6); color: #FFD700; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; border: 1px solid #FFD700; }
+        .row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .row small { color: #aaa; }
+        .scroll { max-height: 420px; overflow-y: auto; }
+        .flash { background: rgba(40,167,69,0.2); border: 1px solid #28a745; color: #a3f7b5; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 15px; text-align: center; }
+        @media (max-width: 768px) { .grid { display: block; } .card { margin-bottom: 25px; } }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- READABILITY: Inter font, comfortable sizes --- */
+        html { font-size: 16px; }
+        body, button, input, select, textarea { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+        body { font-size: 1rem; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+    </style>
+</head>
+<body style="background: url('{{ url_for('static', filename='bg.jpg') }}') no-repeat center top fixed; background-size: cover; background-color: #000;">
+<div class="wrap">
+    <div class="top">
+        <h1 style="color:white; margin:0; text-shadow: 2px 2px 5px rgba(0,0,0,0.5);">🎉 SSLG Dashboard <small style="font-size:0.5em; color:#FFD700;">({{ username }})</small></h1>
+        <a class="link-btn" href="{{ url_for('logout') }}">Log out</a>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}<div class="flash">{{ messages[0] }}</div>{% endif %}
+    {% endwith %}
+
+    <div class="grid">
+        <!-- Post an event -->
+        <div class="card">
+            <h2>Post a Campus Event</h2>
+            <form method="POST" action="{{ url_for('add_event') }}" enctype="multipart/form-data">
+                <label>Title</label>
+                <input class="lms-input" type="text" name="title" required>
+                <label>Date</label>
+                <input class="lms-input" type="date" name="event_date" required>
+                <label>Category</label>
+                <input class="lms-input" type="text" name="category" placeholder="e.g. Intramurals, Foundation Day" value="General Events">
+                <label>Description</label>
+                <textarea class="lms-input" name="description" rows="4" required></textarea>
+                <label>Registration / Form link (optional)</label>
+                <input class="lms-input" type="url" name="form_link" placeholder="https://...">
+                <label>Event image (optional)</label>
+                <input class="lms-input" type="file" name="image" accept="image/*">
+                <input type="hidden" name="is_school_wide" value="on">
+                <button class="btn-gold" type="submit">Publish Event</button>
+            </form>
+        </div>
+
+        <!-- My events -->
+        <div class="card">
+            <h2>My Posted Events</h2>
+            <div class="scroll">
+                {% for e in events %}
+                <div class="row">
+                    <div><strong>{{ e.title }}</strong><br><small>{{ e.event_date }} · {{ e.category }} · 👍 {{ e.interested_count }} interested · ✅ {{ e.going_count }} going</small></div>
+                    <form method="POST" action="{{ url_for('delete_event', event_id=e.id) }}" onsubmit="return confirm('Delete this event?');">
+                        <button class="danger-btn" type="submit">Delete</button>
+                    </form>
+                </div>
+                {% else %}
+                <p style="color:#aaa;">No events yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment moderation (names are never shown) -->
+    <div class="card" style="margin-top: 30px;">
+        <h2>Recent Anonymous Comments</h2>
+        <div class="scroll">
+            {% for c in comments %}
+            <div class="row">
+                <div><strong>{{ c.anon_label }}</strong> <small>on “{{ c.event_title }}” · {{ c.created_at }}</small><br>{{ c.content }}</div>
+                <form method="POST" action="{{ url_for('hide_comment', comment_id=c.id) }}" onsubmit="return confirm('Hide this comment?');">
+                    <button class="danger-btn" type="submit">Hide</button>
+                </form>
+            </div>
+            {% else %}
+            <p style="color:#aaa;">No comments yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</body>
+</html>

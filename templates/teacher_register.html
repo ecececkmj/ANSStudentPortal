@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Faculty / SSLG Sign Up</title>
+    <link rel="icon" href="{{ url_for('static', filename='fabicon/fabicon.png') }}" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* ADDED BACKGROUND IMAGE HERE */
+        body { 
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
+            background: url("{{ url_for('static', filename='bg.jpg') }}") no-repeat center center fixed; 
+            background-size: cover;
+            min-height: 100vh;
+            margin: 0;
+        } 
+        .auth-box { background: rgba(59, 13, 19, 0.95); padding: 40px; border-radius: 10px; border-top: 4px solid #FFD700; box-shadow: 0 15px 40px rgba(0,0,0,0.9); text-align: center; width: 90%; max-width: 450px; }
+        .auth-box h2 { color: #FFD700; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; border-bottom: none; margin-top: 0; }
+        .auth-input { width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(20, 2, 5, 0.9); border: 1px solid rgba(255, 215, 0, 0.5); border-radius: 6px; color: white; outline: none; font-size: 1rem; transition: 0.3s; box-sizing: border-box;}
+        .auth-input:focus { border-color: #FFD700; box-shadow: 0 0 8px rgba(255,215,0,0.3); }
+        .auth-input::placeholder { color: #aaa; }
+        .auth-btn { background-color: #FFD700; color: #800000; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; font-size: 1rem; margin-top: 5px; text-transform: uppercase;}
+        .auth-btn:hover { transform: translateY(-2px); background-color: #ffea75; }
+        .auth-links { margin-top: 20px; font-size: 0.9rem; color: #ddd; }
+        .auth-links a { color: #FFD700; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .auth-links a:hover { color: #fff; }
+        .field-error { display: none; color: #ffcccc; font-size: 0.85rem; text-align: left; margin: -8px 0 12px 2px; }
+        .hint { color: #ccc; font-size: 0.85rem; margin: 0 0 18px 0; }
+        .error { background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #ffcccc; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="auth-box">
+        
+        <!-- ADDED LOGO HERE -->
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="School Logo" style="width: 110px; height: 110px; object-fit: cover; border-radius: 50%; border: 3px solid #FFD700; margin-bottom: 15px;">
+        
+        <h2>Faculty / SSLG Sign Up</h2>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="error">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <p class="hint">Only teachers and SSLG officers on the school's authorized list can sign up. Enter your full name exactly as it appears on that list, and the access code that was given to you.</p>
+
+        <form method="POST">
+            <input type="text" name="full_name" class="auth-input" placeholder="Full Name (e.g., Juan D. Dela Cruz)" autocomplete="off" required>
+            <input type="text" name="access_code" class="auth-input" placeholder="Access Code (given to you)" autocomplete="off" required>
+            <input type="password" name="password" class="auth-input" placeholder="Choose a Password (at least 8 characters)" minlength="8" required>
+            <input type="password" name="confirm_password" class="auth-input" placeholder="Confirm Password" minlength="8" required>
+            <button type="submit" class="auth-btn">Sign Up</button>
+        </form>
+
+        <div class="auth-links">
+            <a href="{{ url_for('teacher_login') }}">&larr; Back to Faculty Login</a>
+        </div>
+    </div>
+</body>
+</html>

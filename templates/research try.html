@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abellana National School - Senior High School Portal</title>
+  <style>
+    /* ==========================================================================
+       RESET & BASE STYLES (Full Screen Fit)
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100vw;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #1a0508; /* Default solid background for sub-pages */
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background 0.4s ease;
+    }
+
+    /* Homepage-specific background image state applied via body class */
+    body.home-background {
+      background: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)),
+                  url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat fixed;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ==========================================================================
+       HEADER & TOP NAVIGATION
+       ========================================================================== */
+    header.top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+
+    /* Top-Left: Small Logo stacked vertically on top of 3-line hamburger menu */
+    .nav-left {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .nav-small-logo {
+      width: 36px;
+      height: 36px;
+      background-color: #FFD700; /* School Gold */
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+    }
+
+    .nav-small-logo svg {
+      width: 20px;
+      height: 20px;
+      fill: #800000; /* School Maroon */
+    }
+
+    .hamburger-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 32px;
+      height: 22px;
+      padding: 0;
+      z-index: 101;
+    }
+
+    .hamburger-btn span {
+      display: block;
+      width: 100%;
+      height: 3px;
+      background-color: #FFD700;
+      border-radius: 2px;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    /* Top-Right: Search Bar, LOG IN, and SIGN UP Buttons */
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .search-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input {
+      background-color: rgba(60, 10, 15, 0.9);
+      border: 2px solid #FFD700;
+      border-radius: 6px;
+      padding: 8px 36px 8px 14px;
+      color: #ffffff;
+      font-size: 0.9rem;
+      width: 220px;
+      outline: none;
+      transition: width 0.3s ease;
+    }
+
+    .search-input::placeholder {
+      color: #dddddd;
+    }
+
+    .search-input:focus {
+      width: 280px;
+    }
+
+    .search-btn {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #FFD700;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: #FFD700;
+    }
+
+    .auth-btn {
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 8px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      border: none;
+    }
+
+    .auth-btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+
+    .btn-login {
+      background-color: #FFD700;
+      color: #800000;
+    }
+
+    .btn-signup {
+      background-color: #800000;
+      color: #ffffff;
+      border: 1px solid #FFD700;
+    }
+
+    /* ==========================================================================
+       SIDEBAR NAVIGATION DRAWER
+       ========================================================================== */
+    .nav-drawer {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 300px;
+      height: 100vh;
+      background-color: #5c0612;
+      border-right: 4px solid #FFD700;
+      box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      transition: left 0.4s ease;
+      padding: 90px 30px 30px 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .nav-drawer.open {
+      left: 0;
+    }
+
+    .drawer-title {
+      color: #FFD700;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+      padding-bottom: 10px;
+    }
+
+    .drawer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .drawer-links a {
+      color: #ffffff;
+      font-size: 1.05rem;
+      font-weight: 500;
+      padding: 10px 14px;
+      border-radius: 6px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      cursor: pointer;
+      display: block;
+    }
+
+    .drawer-links a:hover {
+      background-color: #FFD700;
+      color: #800000;
+    }
+
+    .drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 999;
+      display: none;
+    }
+
+    .drawer-overlay.active {
+      display: block;
+    }
+
+    /* ==========================================================================
+       SINGLE-PAGE VIEW SECTIONS CONTAINER
+       ========================================================================== */
+    .view-section {
+      display: none;
+      flex-grow: 1;
+      width: 100vw;
+      min-height: 100vh;
+    }
+
+    .view-section.active-view {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- HOMEPAGE HERO LAYOUT (Two-Column Split over Background) --- */
+    .home-container {
+      max-width: 1300px;
+      width: 100%;
+      margin: auto;
+      padding: 110px 20px 40px 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+      flex-grow: 1;
+    }
+
+    /* Left Side: Stacked & Left-Aligned Branding & Info */
+    .school-info-stack {
+      background: linear-gradient(135deg, #4a0d13 0%, #2b0307 100%);
+      border: 10px solid #361115;
+      outline: 2px solid #5a1d22;
+      border-radius: 8px;
+      padding: 40px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    }
+
+    .school-large-logo {
+      width: 90px;
+      height: 90px;
+      background: radial-gradient(circle, #ffe066 0%, #FFD700 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+      margin-bottom: 20px;
+    }
+
+    .school-large-logo svg {
+      width: 52px;
+      height: 52px;
+      fill: #800000;
+    }
+
+    .portal-main-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #FFD700;
+      text-transform: uppercase;
+      line-height: 1.2;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+    }
+
+    .portal-sub-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 25px;
+    }
+
+    .school-contact-details {
+      border-top: 1px solid rgba(255, 215, 0, 0.3);
+      padding-top: 20px;
+      width: 100%;
+      font-size: 0.95rem;
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Right Side: Clickable Feature Cards Grid */
+    .cards-grid-right {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .portal-card {
+      background-color: rgba(59, 13, 19, 0.92);
+      border-top: 4px solid #FFD700;
+      border-radius: 8px;
+      padding: 20px;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .portal-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+      background-color: rgba(74, 17, 24, 0.98);
+    }
+
+    .portal-card h3 {
+      color: #FFD700;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .card-content-preview {
+      font-size: 0.85rem;
+      color: #cccccc;
+      line-height: 1.4;
+      flex-grow: 1;
+      margin-bottom: 12px;
+    }
+
+    .preview-item {
+      margin-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 4px;
+    }
+
+    .preview-date {
+      color: #FFD700;
+      font-weight: 600;
+      font-size: 0.78rem;
+    }
+
+    /* School Gallery Card Sample Image Placeholder */
+    .gallery-preview-img {
+      width: 100%;
+      height: 85px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      border: 1px solid rgba(255, 215, 0, 0.4);
+    }
+
+    .gallery-caption {
+      font-size: 0.75rem;
+      color: #FFD700;
+      font-style: italic;
+    }
+
+    /* Mini Calendar Grid Preview */
+    .mini-calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      text-align: center;
+      font-size: 0.75rem;
+      margin-top: 4px;
+    }
+
+    .mini-calendar div {
+      padding: 2px 0;
+    }
+
+    .mini-calendar .cal-header {
+      font-weight: bold;
+      color: #FFD700;
+    }
+
+    .mini-calendar .cal-day {
+      color: #dddddd;
+    }
+
+    .mini-calendar .cal-day.active {
+      background-color: #FFD700;
+      color: #800000;
+      border-radius: 50%;
+      font-weight: bold;
+    }
+
+    .card-hover-footer {
+      font-size: 0.75rem;
+      color: #FFD700;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-top: auto;
+    }
+
+    /* --- DEDICATED FULL-SCREEN & FULL-WIDTH SECTION VIEW PAGES --- */
+    .section-full-wrapper {
+      width: 100vw;
+      min-height: 100vh;
+      background-color: #240508;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      padding: 110px 60px 60px 60px; /* Generous full-width padding */
+    }
+
+    .back-home-btn {
+      background-color: #FFD700;
+      color: #800000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 30px;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      font-size: 0.95rem;
+    }
+
+    .back-home-btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+
+    .section-page-title {
+      font-size: 2.4rem;
+      color: #FFD700;
+      margin-bottom: 25px;
+      border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+      padding-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .section-page-body {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #f0f0f0;
+      max-width: 1200px;
+    }
+
+    .section-page-body p {
+      margin-bottom: 20px;
+    }
+
+    .section-page-body ul {
+      margin-left: 25px;
+      margin-bottom: 20px;
+    }
+
+    .section-page-body li {
+      margin-bottom: 10px;
+    }
+
+    /* ==========================================================================
+       MODAL POPUP WINDOW (Login / Signup / Search)
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.75);
+      z-index: 2000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background-color: #4a1118;
+      border: 3px solid #FFD700;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      padding: 30px;
+      position: relative;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-backdrop.active .modal-box {
+      transform: translateY(0);
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #FFD700;
+      font-size: 1.8rem;
+      cursor: pointer;
+    }
+
+    .modal-title {
+      color: #FFD700;
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .modal-body {
+      color: #f0f0f0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* ==========================================================================
+       FOOTER
+       ========================================================================== */
+    footer {
+      background-color: #3b0d13;
+      text-align: center;
+      padding: 18px;
+      font-size: 0.85rem;
+      border-top: 3px solid #FFD700;
+      color: #dddddd;
+      margin-top: auto;
+      width: 100vw;
+    }
+
+    /* ==========================================================================
+       RESPONSIVE DESIGN (Media Queries)
+       ========================================================================== */
+    @media (max-width: 900px) {
+      .home-container {
+        grid-template-columns: 1fr;
+        margin-top: 90px;
+      }
+      .cards-grid-right {
+        grid-template-columns: 1fr 1fr;
+      }
+      .section-full-wrapper {
+        padding: 100px 25px 40px 25px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      header.top-nav {
+        padding: 15px 20px;
+      }
+      .search-input {
+        width: 140px;
+      }
+      .search-input:focus {
+        width: 170px;
+      }
+      .cards-grid-right {
+        grid-template-columns: 1fr;
+      }
+      .auth-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body class="home-background">
+
+  <!-- Top Navigation Bar -->
+  <header class="top-nav">
+    <div class="nav-left">
+      <!-- Top-Left: Small Logo stacked on top of 3-line hamburger menu -->
+      <div class="nav-small-logo" aria-label="School Logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L1 7l11 5 9-4.09V17h2V7L12 2zm0 10.3L4.2 8.5 12 5l7.8 3.5L12 12.3zM5 14.28v3.5L12 21.5l7-3.72v-3.5L12 18l-7-3.72z"/>
+        </svg>
+      </div>
+      <button class="hamburger-btn" id="hamburgerToggle" aria-label="Toggle Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Top-Right: Search Bar & Auth Buttons -->
+    <div class="nav-right">
+      <div class="search-container">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search portal...">
+        <button class="search-btn" id="searchSubmitBtn" aria-label="Search">
+          <svg viewBox="0 0 24 24">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+        </button>
+      </div>
+      <button class="auth-btn btn-login" id="loginBtn">LOG IN</button>
+      <button class="auth-btn btn-signup" id="signupBtn">SIGN UP</button>
+    </div>
+  </header>
+
+  <!-- Sidebar Navigation Drawer & Overlay -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <nav class="nav-drawer" id="navDrawer">
+    <div class="drawer-title">ANS SHS Portal Menu</div>
+    <ul class="drawer-links">
+      <li><a class="nav-menu-link" data-view="home">Home Dashboard</a></li>
+      <li><a class="nav-menu-link" data-view="calendar">Academic Calendar</a></li>
+      <li><a class="nav-menu-link" data-view="announcements">Announcements</a></li>
+      <li><a class="nav-menu-link" data-view="gallery">School Gallery</a></li>
+      <li><a class="nav-menu-link" data-view="events">School Events</a></li>
+    </ul>
+  </nav>
+
+  <!-- ==========================================================================
+       DYNAMIC VIEW 1: HOME DASHBOARD (Default Active View with Background Image)
+       ========================================================================== -->
+  <main class="view-section active-view" id="view-home">
+    <div class="home-container">
+      
+      <!-- Left Side: Stacked & Left-Aligned Branding & Info -->
+      <section class="school-info-stack">
+        <div class="school-large-logo">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L1 7l11 5 9-4.09V17h2V7L12 2zm0 10.3L4.2 8.5 12 5l7.8 3.5L12 12.3zM5 14.28v3.5L12 21.5l7-3.72v-3.5L12 18l-7-3.72z"/>
+          </svg>
+        </div>
+        <h1 class="portal-main-title">Abellana National School</h1>
+        <div class="portal-sub-title">Senior High School Portal</div>
+        
+        <div class="school-contact-details">
+          <div><strong>Address:</strong> Osmeña Blvd, Cebu City, Philippines</div>
+          <div><strong>Phone:</strong> (032) 253-9641</div>
+          <div><strong>Email:</strong> shs.portal@abellana.edu.ph</div>
+        </div>
+      </section>
+
+      <!-- Right Side: Clickable Feature Cards Grid -->
+      <section class="cards-grid-right">
+
+        <!-- Card 1: Calendar -->
+        <div class="portal-card" data-target-view="calendar">
+          <h3>Calendar</h3>
+          <div class="card-content-preview">
+            <div class="mini-calendar">
+              <div class="cal-header">S</div><div class="cal-header">M</div><div class="cal-header">T</div><div class="cal-header">W</div><div class="cal-header">T</div><div class="cal-header">F</div><div class="cal-header">S</div>
+              <div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div>
+              <div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div><div class="cal-day">7</div><div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day">10</div>
+              <div class="cal-day">11</div><div class="cal-day active">12</div><div class="cal-day">13</div><div class="cal-day">14</div><div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div>
+              <div class="cal-day">18</div><div class="cal-day">19</div><div class="cal-day">20</div><div class="cal-day">21</div><div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day">24</div>
+              <div class="cal-day">25</div><div class="cal-day">26</div><div class="cal-day">27</div><div class="cal-day">28</div><div class="cal-day">29</div><div class="cal-day"></div><div class="cal-day"></div>
+            </div>
+          </div>
+          <div class="card-hover-footer">View Full Calendar &rarr;</div>
+        </div>
+
+        <!-- Card 2: Announcement -->
+        <div class="portal-card" data-target-view="announcements">
+          <h3>Announcement</h3>
+          <div class="card-content-preview">
+            <div class="preview-item">
+              <span class="preview-date">Nov 1, 2022</span>
+              <div>Abellana National School Senior High School News & Notices...</div>
+            </div>
+          </div>
+          <div class="card-hover-footer">Read Full Bulletin &rarr;</div>
+        </div>
+
+        <!-- Card 3: School Gallery (with Sample Image Placeholder & Caption) -->
+        <div class="portal-card" data-target-view="gallery">
+          <h3>School Gallery</h3>
+          <div class="card-content-preview">
+            <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=400&auto=format&fit=crop" alt="Student Leadership Group" class="gallery-preview-img">
+            <div class="gallery-caption">School Gallery - Student Leadership Group</div>
+          </div>
+          <div class="card-hover-footer">Explore Gallery &rarr;</div>
+        </div>
+
+        <!-- Card 4: Events -->
+        <div class="portal-card" data-target-view="events">
+          <h3>Events</h3>
+          <div class="card-content-preview">
+            <div class="preview-item">
+              <span class="preview-date">Wed, Jun 16</span>
+              <div>Thursday 2021 Intramurals Kickoff</div>
+            </div>
+            <div class="preview-item">
+              <span class="preview-date">Dec 11</span>
+              <div>Annual Science & Tech Fair</div>
+            </div>
+          </div>
+          <div class="card-hover-footer">Explore Events &rarr;</div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       DYNAMIC VIEW 2: CALENDAR SECTION (Full-Screen & Full-Width)
+       ========================================================================== -->
+  <section class="view-section" id="view-calendar">
+    <div class="section-full-wrapper">
+      <button class="back-home-btn" data-action="home">&larr; Back to Home</button>
+      <h2 class="section-page-title">Academic Calendar</h2>
+      <div class="section-page-body">
+        <p>Review the official academic schedules, examination dates, holiday observances, and enrollment milestones for the current semester at Abellana National School.</p>
+        <ul>
+          <li><strong>First Semester Mid-Term Examinations:</strong> October 20 – 22, 2026</li>
+          <li><strong>Parents-Teachers Conference:</strong> November 5, 2026</li>
+          <li><strong>First Semester Final Examinations:</strong> December 15 – 17, 2026</li>
+          <li><strong>Christmas Break:</strong> December 20, 2026 – January 3, 2027</li>
+        </ul>
+        <p>All students are advised to check their respective strand portals for specific room assignments and examination schedules.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       DYNAMIC VIEW 3: ANNOUNCEMENTS SECTION (Full-Screen & Full-Width)
+       ========================================================================== -->
+  <section class="view-section" id="view-announcements">
+    <div class="section-full-wrapper">
+      <button class="back-home-btn" data-action="home">&larr; Back to Home</button>
+      <h2 class="section-page-title">Official Announcements & School News</h2>
+      <div class="section-page-body">
+        <p>Read official advisories, DepEd circulars, class schedule updates, and administrative notices for all Senior High School students.</p>
+        <p><strong>Advisory No. 42 (Current Updates):</strong> Abellana National School Senior High School official announcements and bulletin notices are posted here as they are released by the administrative office.</p>
+        <p><strong>Advisory No. 43:</strong> Submission of Grade 12 research defense requirements is set for next Friday at the faculty room.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       DYNAMIC VIEW 4: SCHOOL GALLERY SECTION (Full-Screen & Full-Width)
+       ========================================================================== -->
+  <section class="view-section" id="view-gallery">
+    <div class="section-full-wrapper">
+      <button class="back-home-btn" data-action="home">&larr; Back to Home</button>
+      <h2 class="section-page-title">School Gallery & Campus Life</h2>
+      <div class="section-page-body">
+        <p>Explore highlights of our campus facilities, academic buildings, laboratories, and student gatherings at Osmeña Blvd, Cebu City.</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 25px;">
+          <div>
+            <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=600&auto=format&fit=crop" alt="Students" style="width:100%; height:200px; object-fit:cover; border-radius:6px; border:2px solid #FFD700;">
+            <p style="font-size:0.95rem; margin-top:8px; color:#FFD700; font-weight:600;">School Gallery - Student Leadership Group</p>
+          </div>
+          <div>
+            <img src="https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=600&auto=format&fit=crop" alt="Campus" style="width:100%; height:200px; object-fit:cover; border-radius:6px; border:2px solid #FFD700;">
+            <p style="font-size:0.95rem; margin-top:8px; color:#FFD700; font-weight:600;">ANS Main Academic Building & Grounds</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       DYNAMIC VIEW 5: EVENTS SECTION (Full-Screen & Full-Width)
+       ========================================================================== -->
+  <section class="view-section" id="view-events">
+    <div class="section-full-wrapper">
+      <button class="back-home-btn" data-action="home">&larr; Back to Home</button>
+      <h2 class="section-page-title">School Events & Activities</h2>
+      <div class="section-page-body">
+        <p>Welcome to the Abellana National School Senior High School Events portal. Stay tuned for upcoming strand competitions, sports meets, and club inductions.</p>
+        <ul>
+          <li><strong>June 16:</strong> Thursday 2021 Intramurals Kickoff at ANS Gymnasium</li>
+          <li><strong>December 11:</strong> Annual Science & Tech Fair & Cultural Night</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Modal Popup -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal-box">
+      <button class="modal-close-btn" id="modalCloseBtn">&times;</button>
+      <h2 class="modal-title" id="modalTitle">Modal Title</h2>
+      <div class="modal-body" id="modalBody">
+        Modal content goes here...
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 Abellana National School - Senior High School Division. All Rights Reserved.</p>
+  </footer>
+
+  <!-- ==========================================================================
+       JAVASCRIPT VIEW SWITCHING & BACKGROUND CONTROLLER LOGIC
+       ========================================================================== -->
+  <script>
+    // 1. Hamburger Menu Toggle Logic
+    const hamburgerBtn = document.getElementById('hamburgerToggle');
+    const navDrawer = document.getElementById('navDrawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+
+    function toggleMenu() {
+      navDrawer.classList.toggle('open');
+      drawerOverlay.classList.toggle('active');
+    }
+
+    hamburgerBtn.addEventListener('click', toggleMenu);
+    drawerOverlay.addEventListener('click', toggleMenu);
+
+    // 2. Single-Page Full-Screen View Switching & Background Controller
+    const viewSections = document.querySelectorAll('.view-section');
+    const bodyElement = document.body;
+
+    function switchView(viewName) {
+      viewSections.forEach(section => {
+        section.classList.remove('active-view');
+      });
+
+      const targetSection = document.getElementById('view-' + viewName);
+      if (targetSection) {
+        targetSection.classList.add('active-view');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Control background image state: only active on homepage
+      if (viewName === 'home') {
+        bodyElement.classList.add('home-background');
+      } else {
+        bodyElement.classList.remove('home-background');
+      }
+    }
+
+    // Attach click listeners to right-side dashboard cards
+    document.querySelectorAll('.portal-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const targetView = card.getAttribute('data-target-view');
+        if (targetView) {
+          switchView(targetView);
+        }
+      });
+    });
+
+    // Attach click listeners to "Back to Home" buttons
+    document.querySelectorAll('.back-home-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        switchView('home');
+      });
+    });
+
+    // Attach click listeners to sidebar drawer links
+    document.querySelectorAll('.nav-menu-link').forEach(link => {
+      link.addEventListener('click', () => {
+        const view = link.getAttribute('data-view');
+        switchView(view);
+        toggleMenu(); // Close drawer after selection
+      });
+    });
+
+    // 3. Search Bar & Auth Modals Logic
+    const searchInput = document.getElementById('searchInput');
+    const searchSubmitBtn = document.getElementById('searchSubmitBtn');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+    function openModal(title, htmlContent) {
+      modalTitle.textContent = title;
+      modalBody.innerHTML = htmlContent;
+      modalBackdrop.classList.add('active');
+    }
+
+    function closeModal() {
+      modalBackdrop.classList.remove('active');
+    }
+
+    searchSubmitBtn.addEventListener('click', () => {
+      const query = searchInput.value.trim();
+      if (query !== "") {
+        openModal(`Search Results for "${query}"`, `<p>Found matches across portal records for <strong>${query}</strong>.</p><ul><li>Related Event: Intramurals & Activities</li><li>Related Notice: Announcements & Bulletins</li><li>Related Record: Academic Calendar</li></ul>`);
+      } else {
+        openModal('Search Notice', '<p>Please enter a keyword or phrase in the search bar.</p>');
+      }
+    });
+
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        searchSubmitBtn.click();
+      }
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      openModal('Student & Faculty Portal Log In', '<p>Please enter your credentials:</p><input type="text" placeholder="LRN / Employee ID" style="width:100%; padding:8px; margin-bottom:10px; border-radius:4px; border:1px solid #ccc;"><br><input type="password" placeholder="Password" style="width:100%; padding:8px; margin-bottom:15px; border-radius:4px; border:1px solid #ccc;"><br><button style="background:#FFD700; color:#800000; font-weight:bold; padding:8px 16px; border:none; border-radius:4px; cursor:pointer;" onclick="alert(\'Login submitted successfully!\'); closeModal();">Sign In</button>');
+    });
+
+    document.getElementById('signupBtn').addEventListener('click', () => {
+      openModal('New Student Portal Registration', '<p>Online registration is available for incoming Grade 11 and transferee students.</p><p>Please prepare digital copies of your Junior High School Report Card (Form 137) and Birth Certificate.</p>');
+    });
+
+    modalCloseBtn.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', (e) => {
+      if (e.target === modalBackdrop) {
+        closeModal();
+      }
+    });
+  </script>
+
+</body>
+</html>
