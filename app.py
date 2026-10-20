@@ -28,9 +28,13 @@ if os.environ.get('RENDER') is None:
 load_dotenv()
 app = Flask(__name__)
 
-# 2. Wrap your app with Cloudflare immediately after creating it
-run_with_cloudflared(app)
-
+# Wrap with Cloudflare ONLY when running locally (not on Render)
+if os.environ.get('RENDER') is None:
+    try:
+        from flask_cloudflared import run_with_cloudflared
+        run_with_cloudflared(app)
+    except Exception:
+        pass
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 if not app.secret_key or len(app.secret_key) < 32:
     raise RuntimeError('FLASK_SECRET_KEY is missing or too short in the .env file (use at least 32 random characters).')
