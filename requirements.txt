@@ -1,4 +1,5 @@
-flask
-gunicorn
+Flask
 pandas
 openpyxl
+gunicorn
+python-dotenv
