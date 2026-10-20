@@ -15,7 +15,15 @@ from setup_db import setup_database
 from tools.sync_masterlist import sync_masterlist, sync_staff, start_watcher
 
 # 1. Import the Cloudflare tool
-from flask_cloudflared import run_with_cloudflared
+import os
+
+# Only use cloudflared when running locally, not on Render
+if os.environ.get('RENDER') is None:
+    try:
+        from flask_cloudflared import run_with_cloudflared
+        # run_with_cloudflared(app)  # Keep your existing usage if any
+    except ImportError:
+        pass
 
 load_dotenv()
 app = Flask(__name__)
