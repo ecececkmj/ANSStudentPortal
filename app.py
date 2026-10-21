@@ -502,7 +502,7 @@ def dashboard():
                            attempts=attempts, current_time=current_time,
                            my_reactions=my_reactions,
                             new_ann_count=new_ann_count, new_ev_count=new_ev_count,
-                           max_ann_id=max_ann_id, max_ev_id=max_ev_id
+                           max_ann_id=max_ann_id, max_ev_id=max_ev_id)
                         
 
 
