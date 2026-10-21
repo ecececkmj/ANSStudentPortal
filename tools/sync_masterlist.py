@@ -14,13 +14,7 @@ import re
 import sqlite3
 import threading
 import time
-from pathlib import Path
 from decimal import Decimal, InvalidOperation
-
-# This file lives in a sub-folder (e.g. "tools"), so the project folder is ONE LEVEL UP.
-# Everything (database, Excel files) is found from here, no matter where you run Python from.
-BASE_DIR = Path(__file__).resolve().parent.parent
-DB_PATH = str(BASE_DIR / 'database.db')
 
 EXCEL_NAME = 'masterlist.xlsx'
 
@@ -35,8 +29,18 @@ CHECK_EVERY = 3   # seconds between checks for a saved change
 STAFF_NAME = 'authorized_staff.xlsx'
 
 
-def _xlsx_files():
-    return [f for f in glob.glob(str(BASE_DIR / '*.xlsx')) if not os.path.basename(f).startswith('~$')]
+def _folders():
+    """Folders to look in: where the app runs from, where this file lives, and the folder above."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    out = []
+    for f in (os.getcwd(), here, os.path.dirname(here)):
+        if f not in out:
+            out.append(f)
+    return out
+
+
+def _xlsx_files(folder):
+    return [f for f in glob.glob(os.path.join(folder, '*.xlsx')) if not os.path.basename(f).startswith('~$')]
 
 
 def _is_staff_file(path):
@@ -46,21 +50,25 @@ def _is_staff_file(path):
 
 def find_excel_file():
     """The STUDENT list: masterlist.xlsx, or the only .xlsx that is not the staff list."""
-    if (BASE_DIR / EXCEL_NAME).exists():
-        return str(BASE_DIR / EXCEL_NAME)
-    others = [f for f in _xlsx_files() if not _is_staff_file(f)]
-    if len(others) == 1:
-        return others[0]
+    for folder in _folders():
+        exact = os.path.join(folder, EXCEL_NAME)
+        if os.path.exists(exact):
+            return exact
+        others = [f for f in _xlsx_files(folder) if not _is_staff_file(f)]
+        if len(others) == 1:
+            return others[0]
     return None
 
 
 def find_staff_file():
     """The AUTHORIZED STAFF list: authorized_staff.xlsx, or the only .xlsx with 'staff' or 'authorized' in its name."""
-    if (BASE_DIR / STAFF_NAME).exists():
-        return str(BASE_DIR / STAFF_NAME)
-    found = [f for f in _xlsx_files() if _is_staff_file(f)]
-    if len(found) == 1:
-        return found[0]
+    for folder in _folders():
+        exact = os.path.join(folder, STAFF_NAME)
+        if os.path.exists(exact):
+            return exact
+        found = [f for f in _xlsx_files(folder) if _is_staff_file(f)]
+        if len(found) == 1:
+            return found[0]
     return None
 
 
@@ -83,7 +91,7 @@ def clean_lrn(value):
     return text if (text.isascii() and text.isdigit() and len(text) == 12) else None
 
 
-def sync_masterlist(db_path=DB_PATH):
+def sync_masterlist(db_path='database.db'):
     try:
         from openpyxl import load_workbook
     except ImportError:
@@ -170,7 +178,7 @@ def clean_role(value):
     return None
 
 
-def sync_staff(db_path=DB_PATH):
+def sync_staff(db_path='database.db'):
     """Excel columns (row 1 = header):  A = Access Code   B = Full Name   C = Role (Teacher or SSLG)
     The Access Code is the person's key: it identifies them, so every person needs their OWN code."""
     conn = sqlite3.connect(db_path)
@@ -247,7 +255,7 @@ def _stamp(path):
     return (os.path.getmtime(path), os.path.getsize(path)) if path else None
 
 
-def start_watcher(db_path=DB_PATH):
+def start_watcher(db_path='database.db'):
     """Starts a background thread that re-syncs the student list AND the staff list whenever an Excel file is saved."""
     global _watcher_started
     if _watcher_started:
