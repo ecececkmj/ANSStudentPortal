@@ -278,44 +278,7 @@
             }
         }
         
-            /* ===== MANAGE EVENTS: compact boxed layout ===== */
-        #view-events .content-wrapper { padding: 10px 20px !important; }
-        #view-events .page-header-box { padding: 12px 22px; margin-bottom: 12px; }
-        #view-events .page-header-box h2 { font-size: 1.3rem; }
-        .ev-box { max-width: 100%; margin: 0 0 14px 0; padding: 16px 22px; border-radius: 12px; border: 1px solid rgba(255,215,0,0.2); }
-        .ev-title { color: #FFD700; margin: 0 0 10px 0; font-size: 1.1rem; }
-        .ev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; align-items: end; }
-        .ev-full { grid-column: 1 / -1; }
-        .ev-label { color: #fff; font-size: 0.8rem; margin-bottom: 3px; display: block; }
-        .ev-grid .lms-input { margin-bottom: 0; padding: 8px 10px; font-size: 0.9rem; box-sizing: border-box; }
-        .ev-check { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 6px; }
-        .ev-check label { color: #FFD700; font-weight: bold; font-size: 0.9rem; }
-        .ev-submit .btn-gold { width: 100%; padding: 10px; }
-        #view-events .sub-header-box { margin: 14px 0 8px 0; padding: 10px 20px; }
-        #view-events .sub-header-box h3 { font-size: 1.1rem; }
-        .ev-table-box { max-height: calc(100vh - 120px); overflow: auto; border-radius: 10px; border: 1px solid rgba(255,215,0,0.2); background: rgba(20,2,5,0.6); }
-        .ev-table-box table { margin: 0; border-top: none; }
-        .ev-table-box th { position: sticky; top: 0; z-index: 2; }
-        @media (max-width: 768px) {
-            .ev-grid { grid-template-columns: 1fr !important; }
-            .ev-box { padding: 14px !important; }
-            .ev-table-box { max-height: none; }
-        }
-    
-        /* --- Gallery Category combo dropdown --- */
-        .cat-combo { position: relative; }
-        .cat-combo .lms-input { padding-right: 34px; }
-        .cat-arrow { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #FFD700; pointer-events: none; font-size: 0.9rem; transition: transform 0.2s; }
-        .cat-combo.open .cat-arrow { transform: translateY(-50%) rotate(180deg); }
-        .cat-menu { display: none; position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 50; background: #1a0508; border: 1px solid rgba(255,215,0,0.45); border-radius: 8px; padding: 6px; box-shadow: 0 12px 28px rgba(0,0,0,0.6); max-height: 260px; overflow-y: auto; }
-        .cat-combo.open .cat-menu { display: block; animation: catFade 0.15s ease-out; }
-        @keyframes catFade { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-        .cat-item { padding: 9px 12px; border-radius: 6px; color: #f3f3f3; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background 0.15s, color 0.15s; }
-        .cat-item:hover, .cat-item.active { background: rgba(255,215,0,0.14); color: #FFD700; }
-        .cat-divider { height: 1px; background: rgba(255,215,0,0.25); margin: 6px 4px; }
-        .cat-custom { color: #FFD700; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .cat-plus { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: #FFD700; color: #800000; font-weight: 800; line-height: 1; }
-</style>
+    </style>
     <style>
         /* ===== PHONE MENU: 3-line button (top-right) opens the sidebar icons as a drawer ===== */
         .mobile-menu-btn, .mobile-menu-overlay { display: none; }
@@ -349,49 +312,33 @@
         }
     </style>
     <style>
-        /* ===== CALENDAR (home card + full view) ===== */
-        .tc-mini { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; color: white; font-size: 0.9rem; }
-        .tc-mini .tc-hdr { color: #FFD700; font-weight: bold; margin-bottom: 5px; }
-        .tc-mini .tc-d { position: relative; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; margin: 0 auto; border-radius: 50%; }
-        .tc-mini .tc-d.today { background: #FFD700; color: #1e060a; font-weight: bold; }
-        .tc-mini .tc-d i { position: absolute; bottom: 1px; width: 4px; height: 4px; border-radius: 50%; background: #e74c3c; }
-        .tc-layout { display: grid; grid-template-columns: 1fr 360px; gap: 25px; align-items: start; }
-        .tc-side { display: flex; flex-direction: column; gap: 20px; }
-        .tc-panel { background: rgba(20, 2, 5, 0.95); border-left: 5px solid #FFD700; border-radius: 8px; padding: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        .tc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .tc-head h3 { color: white; margin: 0; font-size: 1.5rem; text-transform: none; }
-        .tc-nav { width: auto !important; padding: 8px 18px !important; margin: 0 !important; font-size: 1.1rem; }
-        .tc-days { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; color: #FFD700; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .tc-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-        .tc-cell { min-height: 78px; padding: 6px 8px; border-radius: 6px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); cursor: pointer; color: #ccc; transition: 0.2s; display: flex; flex-direction: column; }
-        .tc-cell:hover { background: rgba(255,255,255,0.08); }
-        .tc-cell.empty { background: transparent; border: none; cursor: default; }
-        .tc-cell.today { border: 2px solid #FFD700; background: rgba(255,215,0,0.1); }
-        .tc-cell.selected { outline: 2px solid #3498db; }
-        .tc-cell .n { font-weight: bold; text-align: right; }
-        .tc-cell.today .n { color: #FFD700; }
-        .tc-dots { display: flex; flex-wrap: wrap; gap: 4px; margin-top: auto; }
-        .tc-dots i { width: 8px; height: 8px; border-radius: 50%; display: block; }
-        .tc-legend { display: flex; flex-wrap: wrap; gap: 8px 18px; color: white; font-size: 0.95rem; }
-        .tc-legend i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; margin-right: 8px; vertical-align: -2px; }
-        .tc-agenda-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; }
-        .tc-agenda-head h3 { color: white; margin: 0; font-size: 1.2rem; text-transform: none; }
-        .tc-link { background: none; border: none; color: #FFD700; font-weight: bold; cursor: pointer; font-size: 0.875rem; }
-        .tc-agenda { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; max-height: 420px; overflow-y: auto; padding-right: 4px; }
-        .tc-item { background: rgba(0,0,0,0.6); padding: 12px 14px; border-radius: 8px; border-left: 5px solid #3498db; }
-        .tc-item .k { font-size: 0.8rem; font-weight: bold; }
-        .tc-item h4 { color: white; margin: 4px 0; font-size: 1rem; }
-        .tc-item .w { color: #ccc; font-size: 0.85rem; }
-        .tc-empty { color: #aaa; text-align: center; padding: 25px 10px; background: rgba(0,0,0,0.3); border-radius: 8px; }
-        /* odd number of home cards: let the last one fill the row */
-        .cards-grid-right > .portal-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
-        @media (max-width: 900px) { .tc-layout { grid-template-columns: 1fr; } }
+        /* ===== Manage Events: clean two-column form + tabs (no long scrolling) ===== */
+        .ev-tabs { display: flex; gap: 10px; margin: 0 0 14px 0; flex-wrap: wrap; }
+        .ev-tab { background: rgba(20, 2, 5, 0.9); color: #FFD700; border: 1px solid rgba(255,215,0,0.4); padding: 9px 20px; border-radius: 6px; font-weight: bold; font-size: 0.9rem; cursor: pointer; transition: 0.2s; }
+        .ev-tab:hover { border-color: #FFD700; }
+        .ev-tab.active { background: #FFD700; color: #800000; border-color: #FFD700; }
+        .ev-card { background: rgba(59, 13, 19, 0.92); border-top: 3px solid #FFD700; border-radius: 8px; padding: 20px 24px; box-shadow: 0 6px 16px rgba(0,0,0,0.3); }
+        .ev-card h3 { color: #FFD700; margin: 0 0 14px 0; font-size: 1.15rem; }
+        .ev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+        .ev-form label { color: #fff; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; display: block; }
+        .ev-form label.opt { color: #FFD700; }
+        .ev-form .lms-input { margin-bottom: 11px; padding: 9px 12px; font-size: 0.92rem; }
+        .ev-form textarea.lms-input { resize: vertical; }
+        .ev-form input[type="file"].lms-input { padding: 7px 10px; }
+        .ev-audience { background: rgba(0,0,0,0.3); padding: 11px 14px; border-radius: 6px; margin-bottom: 11px; }
+        .ev-audience .lms-input { margin-bottom: 9px; }
+        .ev-check { display: flex; align-items: center; gap: 10px; }
+        .ev-check input { width: 18px; height: 18px; }
+        .ev-check label { margin: 0; color: #FFD700; font-weight: bold; font-size: 0.85rem; }
+        .ev-actions { display: flex; justify-content: flex-end; align-items: center; gap: 14px; margin-top: 4px; }
+        .ev-actions .note { color: #aaa; font-size: 0.8rem; margin-right: auto; }
+        .ev-list { max-height: calc(100vh - 290px); min-height: 160px; overflow-y: auto; border-radius: 6px; }
+        .ev-list table { margin: 0; border-top: none; box-shadow: none; }
         @media (max-width: 768px) {
-            .tc-panel { padding: 14px; }
-            .tc-scroll { overflow-x: auto; }
-            .tc-days, .tc-grid { min-width: 330px; }
-            .tc-cell { min-height: 52px; padding: 4px; }
-            .tc-mini { gap: 4px; }
+            .ev-grid { grid-template-columns: 1fr; }
+            .ev-card { padding: 16px 14px; }
+            .ev-actions { flex-direction: column; align-items: stretch; }
+            .ev-list { max-height: none; }
         }
     </style>
 </head>
@@ -414,13 +361,6 @@
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
             </span>
             Dashboard
-        </a>
-
-        <a id="nav-calendar" class="side-link" onclick="switchViewAndRemember('calendar')">
-            <span class="side-icon" style="margin-bottom: 5px; display: flex;">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-            </span>
-            Calendar
         </a>
         
         <a id="nav-announcements" class="side-link" onclick="switchViewAndRemember('announcements')">
@@ -545,7 +485,7 @@
                         
                         <div class="info-tooltip-text" style="position: absolute; top: 150%; left: 0; width: 280px; background: rgba(20, 2, 5, 0.98); color: white; padding: 15px; border-radius: 8px; border-top: 4px solid #FFD700; box-shadow: 0 8px 24px rgba(0,0,0,0.7); font-size: 0.85rem; line-height: 1.5; visibility: hidden; opacity: 0; transform: translateY(10px); transition: 0.3s ease; z-index: 100; text-transform: none; letter-spacing: normal; text-align: left;">
                             <strong style="color: #FFD700; display: block; margin-bottom: 6px; font-size: 0.95rem;">Faculty Command Center</strong>
-                            Use this dashboard to post <strong>announcements</strong> and to schedule and manage school <strong>events</strong>.
+                            Use this dashboard to post school-wide <strong>announcements</strong> and to create and manage school <strong>events</strong>.
                         </div>
                     </div>
                 </div>
@@ -558,21 +498,6 @@
             </section>
 
             <section class="cards-grid-right">
-                <div class="portal-card" onclick="switchViewAndRemember('calendar')" style="cursor: pointer;">
-                    <h3>Calendar</h3>
-                    <div class="card-content-preview"><div class="tc-mini" id="tcMiniCalendar"></div></div>
-                    <div class="card-hover-footer">View Full Calendar &rarr;</div>
-                </div>
-                <div class="portal-card" onclick="switchViewAndRemember('announcements')" style="cursor: pointer;">
-                    <h3>Announcements</h3>
-                    <div class="card-content-preview">Broadcast bulletins to specific enrolled classes.</div>
-                    <div class="card-hover-footer">Post Update &rarr;</div>
-                </div>
-                <div class="portal-card" onclick="switchViewAndRemember('events')" style="cursor: pointer;">
-                    <h3>Events</h3>
-                    <div class="card-content-preview"><strong style="color: #FFD700;">{{ events|length }}</strong> event{{ '' if events|length == 1 else 's' }} posted. Schedule new ones and see who is going.</div>
-                    <div class="card-hover-footer">Manage Events &rarr;</div>
-                </div>
                 {% if role != 'sslg' %}
                 <div class="portal-card" onclick="switchViewAndRemember('students')" style="cursor: pointer;">
                     <h3>Students</h3>
@@ -580,6 +505,33 @@
                     <div class="card-hover-footer">View Students &rarr;</div>
                 </div>
                 {% endif %}
+                <div class="portal-card" onclick="switchViewAndRemember('announcements')" style="cursor: pointer;">
+                    <h3>Announcements</h3>
+                    <div class="card-content-preview">Broadcast bulletins to the whole school.</div>
+                    <div class="card-hover-footer">Post Update &rarr;</div>
+                </div>
+                <div class="portal-card" onclick="switchViewAndRemember('events')" style="cursor: pointer;">
+                    <h3>Events</h3>
+                    <div class="card-content-preview"><strong style="color: #FFD700;">{{ events|length }}</strong> event{{ '' if events|length == 1 else 's' }} posted. Schedule new ones and see who is going.</div>
+                    <div class="card-hover-footer">Manage Events &rarr;</div>
+                </div>
+                <div class="portal-card" onclick="switchViewAndRemember('events')" style="cursor: pointer;">
+                    <h3>School Gallery</h3>
+                    <div class="card-content-preview">
+                        <div id="teacherGallery" style="position: relative; width: 100%; height: 90px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,215,0,0.3); background: #111;">
+                            {% set tg = namespace(has=false) %}
+                            {% for ev in events %}{% if ev.image_path %}{% set tg.has = true %}
+                            <div class="t-gallery-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; background: url('{{ url_for('static', filename='uploads/' + ev.image_path) }}') center/cover;">
+                                <div style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.75); color: #FFD700; padding: 4px 8px; font-size: 0.72rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ ev.title }}</div>
+                            </div>
+                            {% endif %}{% endfor %}
+                            {% if not tg.has %}
+                            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #888; font-size: 0.8rem; font-style: italic; text-align: center;">No event photos uploaded yet.</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-hover-footer">Add Event Photos &rarr;</div>
+                </div>
             </section>
         </div>
     </main>
@@ -861,43 +813,6 @@
         </div>
     </section>
 
-    <!-- VIEW: CALENDAR -->
-    <section class="view-section" id="view-calendar" style="display: none;">
-        <div class="content-wrapper" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
-
-            <div class="page-header-box">
-                <h2>Calendar</h2>
-            </div>
-
-            <div class="tc-layout">
-                <div class="tc-panel">
-                    <div class="tc-head">
-                        <button type="button" class="btn-gold tc-nav" onclick="tcChangeMonth(-1)" aria-label="Previous month">&larr;</button>
-                        <h3 id="tcMonthYear"></h3>
-                        <button type="button" class="btn-gold tc-nav" onclick="tcChangeMonth(1)" aria-label="Next month">&rarr;</button>
-                    </div>
-                    <div class="tc-scroll">
-                        <div class="tc-days"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
-                        <div id="tcGrid" class="tc-grid"></div>
-                    </div>
-                </div>
-
-                <div class="tc-side">
-                    <div class="tc-panel tc-legend">
-                        <span><i style="background:#3498db"></i>Events</span>
-                    </div>
-                    <div class="tc-panel" style="flex-grow: 1;">
-                        <div class="tc-agenda-head">
-                            <h3 id="tcAgendaTitle">Upcoming</h3>
-                            <button type="button" id="tcAgendaReset" class="tc-link" onclick="tcSelect(null)" style="display:none;">Show upcoming</button>
-                        </div>
-                        <div id="tcAgenda" class="tc-agenda"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <section class="view-section" id="view-announcements" style="display: none;">
         <!-- Wrapped in max-width container to prevent stretching too far right -->
         <div class="content-wrapper" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
@@ -909,61 +824,122 @@
             <div class="section-page-body">
                 <form method="POST" action="{{ url_for('add_announcement') }}" class="lms-form" style="max-width: 100%;">
                     <select name="subject_id" class="lms-input" required>
-                        <option value="0" style="font-weight: bold; color: #FFD700;">Grade 11 Students</option>
+                        <option value="">-- Select Audience --</option>
+                        <option value="0" style="font-weight: bold; color: #FFD700;">📢 General (School-Wide Announcement)</option>
+                        {% for sub in subjects %}
+                        <option value="{{ sub.id }}">{{ sub.subject_name }} (Code: {{ sub.code }})</option>
+                        {% endfor %}
                     </select>
                     <input type="text" name="title" class="lms-input" placeholder="Announcement Title" required>
                     <textarea name="content" class="lms-input" rows="5" placeholder="Write your message here..." required></textarea>
                     <button type="submit" class="btn-gold">Broadcast to Students</button>
                 </form>
             </div>
+
+            <!-- EVERYONE (teachers, SSLG, admin) SEES ALL ANNOUNCEMENTS -->
+            <div class="section-page-body" style="margin-top: 20px;">
+                <h3 style="color: #FFD700; margin: 0 0 12px 0;">All Announcements</h3>
+                <div style="max-height: 420px; overflow-y: auto; padding-right: 6px;">
+                    {% for a in announcements %}
+                    <div style="border: 1px solid rgba(255,215,0,0.2); border-radius: 8px; padding: 14px; margin-bottom: 12px; background: rgba(0,0,0,0.35);">
+                        <div style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; color: #aaa; font-size: 0.85rem; margin-bottom: 6px;">
+                            <span>{{ 'School-Wide' if a.subject_id == 0 else a.subject_name }} &middot; Posted by {{ a.poster }}</span>
+                            <span>{{ (a.date_posted or '')[:10] }}</span>
+                        </div>
+                        <strong style="color: white; font-size: 1.05rem;">{{ a.title }}</strong>
+                        <div style="color: #ddd; white-space: pre-wrap; margin-top: 6px;">{{ a.content }}</div>
+                        {% if is_admin or a.teacher_id == my_id %}
+                        <form method="POST" action="{{ url_for('delete_announcement', ann_id=a.id) }}" style="margin: 10px 0 0 0;">
+                            <button type="submit" style="background: #e74c3c; color: white; padding: 5px 12px; font-size: 0.8rem; border: none; cursor: pointer; border-radius: 4px;" onclick="return confirm('Delete this announcement?');">Delete</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <p style="color: #888; font-style: italic;">No announcements posted yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </section>
 
     <section class="view-section" id="view-events" style="display: none;">
-        <!-- Wrapped in max-width container to prevent stretching too far right -->
         <div class="content-wrapper" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
-            
-            <div class="page-header-box">
+
+            <div class="page-header-box" style="margin-bottom: 16px;">
                 <h2>Schedule & Manage Events</h2>
             </div>
-            
-            <div class="section-page-body">
-                <!-- ADDED: enctype="multipart/form-data" to allow image uploads -->
-                <form method="POST" action="{{ url_for('add_event') }}" class="lms-form ev-box" enctype="multipart/form-data">
-                    <h3 class="ev-title">Schedule New Event</h3>
+
+            <div class="ev-tabs">
+                <button type="button" class="ev-tab active" id="evtab-new" onclick="showEvTab('new')">+ New Event</button>
+                <button type="button" class="ev-tab" id="evtab-posted" onclick="showEvTab('posted')">Posted Events ({{ events|length }})</button>
+            </div>
+
+            <!-- TAB 1: NEW EVENT (two columns, fits on one screen) -->
+            <div id="evpanel-new" class="ev-card">
+                <h3>Schedule New Event</h3>
+                <form method="POST" action="{{ url_for('add_event') }}" enctype="multipart/form-data" class="ev-form">
                     <div class="ev-grid">
                         <div>
-                            <label class="ev-label">Event Title</label>
+                            <label>Event Title</label>
                             <input type="text" name="title" class="lms-input" placeholder="e.g., Buwan ng Wika Celebration" required>
+
+                            <label>Date & Time</label>
+                            <input type="datetime-local" name="event_date" class="lms-input" required style="color-scheme: dark;">
+
+                            <label>Description / Details</label>
+                            <textarea name="description" class="lms-input" rows="5" placeholder="Event details..." required></textarea>
                         </div>
                         <div>
-                            <label class="ev-label">Date &amp; Time</label>
-                            <input type="datetime-local" name="event_date" class="lms-input" required style="color-scheme: dark;">
-                        </div>
+                            <label class="opt">Registration Link (optional)</label>
+                            <input type="url" name="form_link" class="lms-input" placeholder="https://docs.google.com/forms/...">
 
-                        <div class="ev-full">
-                            <label class="ev-label">Description / Details</label>
-                            <textarea name="description" class="lms-input" rows="2" placeholder="Event details..." required style="resize: vertical;"></textarea>
-                        </div>
+                            <label class="opt">Event Banner (optional image)</label>
+                            <input type="file" name="image" class="lms-input" accept="image/*">
 
-                        <!-- Events are always shown to everyone (school-wide) -->
-                        <input type="hidden" name="is_school_wide" value="on">
+                            <label class="opt">Gallery Category</label>
+                            <input type="text" name="category" class="lms-input" list="category-options" placeholder="Pick one or type a new category...">
+                            <datalist id="category-options">
+                                <option value="General Events">
+                                <option value="Buwan ng Wika">
+                                <option value="Thanksgiving">
+                                <option value="Intramurals">
+                                <option value="Christmas Party">
+                                <option value="Graduation">
+                            </datalist>
 
-                        <div class="ev-submit ev-full">
-                            <button type="submit" class="btn-gold">Publish Event</button>
+                            {% if role != 'sslg' %}
+                            <div class="ev-audience">
+                                <label>Target Audience</label>
+                                <select name="subject_id" class="lms-input">
+                                    <option value="0">General (No Specific Class)</option>
+                                    {% for sub in subjects %}
+                                    <option value="{{ sub.id }}">{{ sub.subject_name }} (Code: {{ sub.code }})</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="ev-check">
+                                    <input type="checkbox" name="is_school_wide" id="school_wide" checked>
+                                    <label for="school_wide">Publish as a School-Wide Event</label>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
+                    <div class="ev-actions">
+                        {% if role == 'sslg' %}<span class="note">Events you post are shown to the whole school.</span>{% endif %}
+                        <button type="submit" class="btn-gold">Publish Event</button>
+                    </div>
                 </form>
+            </div>
 
-                <div class="sub-header-box">
-                    <h3>Posted Events</h3>
-                </div>
-                <div class="table-responsive ev-table-box">
+            <!-- TAB 2: POSTED EVENTS (scrolls inside its own box) -->
+            <div id="evpanel-posted" class="ev-card" style="display: none;">
+                <h3>All Posted Events</h3>
+                <div class="ev-list table-responsive">
                     <table>
                         <tr><th>Title</th><th>Date</th><th>Responses</th><th>Action</th></tr>
                         {% for ev in events %}
                         <tr>
-                            <td><strong>{{ ev.title }}</strong><br><span style="color: #aaa; font-size: 0.85rem;">{{ ev.subject_name }}</span></td>
+                            <td><strong>{{ ev.title }}</strong><br><span style="color: #aaa; font-size: 0.85rem;">{{ ev.subject_name }} &middot; Posted by {{ ev.poster }}</span></td>
                             <td style="color: #FFD700;">{{ ev.event_date }}</td>
                             <td>
                                 {% set r = responses.get(ev.id) %}
@@ -986,19 +962,22 @@
                                 {% endif %}
                             </td>
                             <td>
+                                {% if is_admin or ev.teacher_id == my_id %}
                                 <form method="POST" action="{{ url_for('delete_event', event_id=ev.id) }}" style="display: inline-block; margin: 0;">
                                     <button type="submit" style="background: #e74c3c; color: white; padding: 6px 12px; font-size: 0.8rem; border: none; cursor: pointer; border-radius: 4px;" onclick="return confirm('Are you sure you want to permanently delete this event?');">
                                         Delete
                                     </button>
                                 </form>
+                                {% else %}<span style="color: #777; font-size: 0.8rem;">Posted by {{ ev.poster }}</span>{% endif %}
                             </td>
                         </tr>
                         {% else %}
-                        <tr><td colspan="4">You haven't scheduled any events yet.</td></tr>
+                        <tr><td colspan="4">No events have been posted yet.</td></tr>
                         {% endfor %}
                     </table>
                 </div>
             </div>
+
         </div>
     </section>
 
@@ -1145,7 +1124,6 @@
             else if(viewName === 'assignments') document.getElementById('nav-assignments')?.classList.add('active');
             else if(viewName === 'announcements') document.getElementById('nav-announcements')?.classList.add('active');
             else if(viewName === 'events') document.getElementById('nav-events')?.classList.add('active');
-            else if(viewName === 'calendar') document.getElementById('nav-calendar')?.classList.add('active');
             else if(viewName === 'students') document.getElementById('nav-students')?.classList.add('active');
             else document.getElementById('nav-home')?.classList.add('active');
             
@@ -1161,6 +1139,21 @@
                 switchViewAndRemember(savedView);
             }
         });
+    </script>
+
+    <script>
+        // Home gallery card: fade through the event photos
+        (function () {
+            const slides = document.querySelectorAll('.t-gallery-slide');
+            if (!slides.length) return;
+            let i = 0;
+            slides[0].style.opacity = 1;
+            if (slides.length > 1) setInterval(() => {
+                slides[i].style.opacity = 0;
+                i = (i + 1) % slides.length;
+                slides[i].style.opacity = 1;
+            }, 3000);
+        })();
     </script>
 
     <!-- AESTHETIC GLOBAL SMART SEARCH ENGINE (TEACHER EDITION) -->
@@ -1183,7 +1176,6 @@
             { type: 'Page', title: 'Teacher Dashboard', detail: 'Main menu', dest: 'home', color: '#9b59b6' },
             { type: 'Page', title: 'Post Announcements', detail: 'Broadcast messages', dest: 'announcements', color: '#9b59b6' },
             { type: 'Page', title: 'Manage Events', detail: 'Schedule activities', dest: 'events', color: '#9b59b6' },
-            { type: 'Page', title: 'Calendar', detail: 'Events by date', dest: 'calendar', color: '#9b59b6' },
             {% if role != 'sslg' %}{ type: 'Page', title: 'All Students', detail: 'Names, sections, LRN, sign-up status', dest: 'students', color: '#2ecc71' },{% endif %}
             {% if role != 'sslg' %}{ type: 'Page', title: 'Grading Queue', detail: 'Check ungraded essays', dest: 'assignments', color: '#9b59b6' }{% endif %}
         ];
@@ -1252,168 +1244,93 @@
             document.querySelectorAll('.permanent-sidebar .side-link, .permanent-sidebar > div[onclick]').forEach(el => el.addEventListener('click', () => setOpen(false)));
         })();
     </script>
-
+    <script>
+        // Manage Events tabs: "New Event" / "Posted Events"
+        function showEvTab(name) {
+            document.getElementById('evpanel-new').style.display = (name === 'new') ? 'block' : 'none';
+            document.getElementById('evpanel-posted').style.display = (name === 'posted') ? 'block' : 'none';
+            document.getElementById('evtab-new').classList.toggle('active', name === 'new');
+            document.getElementById('evtab-posted').classList.toggle('active', name === 'posted');
+        }
+    </script>
+<!-- NEW-POST NOTIFICATIONS: red badge on Announcements / Events + a pop-up when something new is posted -->
+<style>
+    .nf-badge { display:inline-block; min-width:18px; height:18px; line-height:18px; padding:0 5px; margin-left:6px; border-radius:9px; background:#e74c3c; color:#fff; font-size:11px; font-weight:bold; text-align:center; vertical-align:middle; }
+    #nf-toast { position:fixed; top:18px; right:18px; z-index:99999; display:flex; flex-direction:column; gap:10px; max-width:min(340px, calc(100vw - 36px)); }
+    .nf-item { background:#3b0d13; color:#fff; border:1px solid #FFD700; border-left:5px solid #FFD700; border-radius:8px; padding:12px 14px; box-shadow:0 8px 24px rgba(0,0,0,.5); font-size:.9rem; cursor:pointer; animation:nfIn .3s ease; }
+    .nf-item strong { color:#FFD700; display:block; margin-bottom:3px; }
+    @keyframes nfIn { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:none; } }
+</style>
+<div id="nf-toast"></div>
 <script>
-(function(){
-    const combo=document.getElementById('catCombo'), input=document.getElementById('catInput'), menu=document.getElementById('catMenu');
-    if(!combo) return;
-    const items=[...menu.querySelectorAll('.cat-item[data-value]')];
-    const basePH=input.placeholder;
-    const open=()=>combo.classList.add('open');
-    const close=()=>combo.classList.remove('open');
-    input.addEventListener('focus',open);
-    input.addEventListener('click',open);
-    input.addEventListener('input',()=>{
-        const q=input.value.trim().toLowerCase();
-        items.forEach(i=>i.style.display=(!q||i.dataset.value.toLowerCase().includes(q))?'':'none');
-        open();
+(function () {
+    var URL_LATEST = "{{ url_for('api_latest') }}";
+    var KIND = "{{ 'staff' if session.get('teacher_id') else 'student' }}";
+    var WHO = "{{ session.get('teacher_id') or session.get('student_id') or '' }}";
+    var K_ANN = 'seen_ann_' + KIND + '_' + WHO, K_EV = 'seen_ev_' + KIND + '_' + WHO;
+    var last = { ann: [], ev: [] }, announced = 0;
+
+    function get(k) { try { var v = localStorage.getItem(k); return v === null ? null : parseInt(v, 10); } catch (e) { return null; } }
+    function set(k, v) { try { localStorage.setItem(k, String(v)); } catch (e) {} }
+    function maxId(list) { return list.reduce(function (m, x) { return Math.max(m, x.id); }, 0); }
+
+    function badge(navId, count) {
+        var link = document.getElementById(navId); if (!link) return;
+        var b = link.querySelector('.nf-badge');
+        if (!count) { if (b) b.remove(); return; }
+        if (!b) { b = document.createElement('span'); b.className = 'nf-badge'; link.appendChild(b); }
+        b.textContent = count > 9 ? '9+' : count;
+    }
+    function toast(title, text, view) {
+        var box = document.getElementById('nf-toast'); if (!box) return;
+        var d = document.createElement('div'); d.className = 'nf-item';
+        var s = document.createElement('strong'); s.textContent = title;
+        var t = document.createElement('span'); t.textContent = text;
+        d.appendChild(s); d.appendChild(t);
+        d.onclick = function () { d.remove(); if (window.switchViewAndRemember) window.switchViewAndRemember(view); };
+        box.appendChild(d);
+        setTimeout(function () { d.remove(); }, 9000);
+    }
+    function unseen(list, key) { var seen = get(key) || 0; return list.filter(function (x) { return x.id > seen; }); }
+    function refreshBadges() {
+        badge('nav-announcements', unseen(last.ann, K_ANN).length);
+        badge('nav-events', unseen(last.ev, K_EV).length);
+    }
+    function markSeen(view) {
+        if (view === 'announcements') set(K_ANN, maxId(last.ann));
+        if (view === 'events') set(K_EV, maxId(last.ev));
+        refreshBadges();
+    }
+
+    function poll(first) {
+        fetch(URL_LATEST, { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (data) {
+            if (!data || !data.kind) return;
+            var newAnn = data.announcements || [], newEv = data.events || [];
+            if (get(K_ANN) === null) set(K_ANN, maxId(newAnn));      // very first visit: nothing is "new" yet
+            if (get(K_EV) === null) set(K_EV, maxId(newEv));
+            var shownA = maxId(last.ann), shownE = maxId(last.ev);
+            last = { ann: newAnn, ev: newEv };
+            refreshBadges();
+            // pop-ups: on page load for anything unread, later only for things that just arrived
+            unseen(newAnn, K_ANN).filter(function (x) { return first || x.id > shownA; }).slice(0, 3).forEach(function (x) {
+                toast('New announcement', x.title + (x.who ? ' - by ' + x.who : ''), 'announcements'); });
+            unseen(newEv, K_EV).filter(function (x) { return first || x.id > shownE; }).slice(0, 3).forEach(function (x) {
+                toast('New event', x.title + (x.who ? ' - by ' + x.who : ''), 'events'); });
+        }).catch(function () {});
+    }
+
+    window.addEventListener('load', function () {
+        var orig = window.switchViewAndRemember;
+        if (typeof orig === 'function') {
+            window.switchViewAndRemember = function (v) { var out = orig.apply(this, arguments); markSeen(v); return out; };
+        }
+        poll(true);
+        setInterval(function () { poll(false); }, 30000);
+        // if the page re-opens straight on Announcements / Events, count them as read
+        try { var cur = localStorage.getItem(KIND === 'staff' ? 'activeTeacherView' : 'activeStudentView') || ''; if (cur) setTimeout(function () { markSeen(cur); }, 1500); } catch (e) {}
     });
-    items.forEach(i=>i.addEventListener('mousedown',e=>{
-        e.preventDefault();
-        input.value=i.dataset.value;
-        input.placeholder=basePH;
-        close();
-    }));
-    document.getElementById('catCustom').addEventListener('mousedown',e=>{
-        e.preventDefault();
-        input.value='';
-        input.placeholder='Type your custom category...';
-        items.forEach(i=>i.style.display='');
-        close();
-        input.focus();
-        close();
-    });
-    document.addEventListener('mousedown',e=>{ if(!combo.contains(e.target)) close(); });
-    input.addEventListener('keydown',e=>{ if(e.key==='Escape') close(); });
 })();
 </script>
-<script>
-    // ===== Calendar: events only =====
-    (function () {
-        const DATA = [
-            {% for ev in events %}{ date: {{ (ev.event_date or '')[:10] | tojson }}, type: 'event', title: {{ ev.title | tojson }}, when: {{ (ev.event_date or '') | tojson }}, sub: {{ ev.subject_name | tojson }} },
-            {% endfor %}
-        ];
-        const KIND = {
-            event: { label: 'Event', color: '#3498db' }
-        };
-        const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-        const pad = n => String(n).padStart(2, '0');
-        const keyOf = (y, m, d) => y + '-' + pad(m + 1) + '-' + pad(d);
-        const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-        const byDate = {};
-        DATA.forEach(i => { (byDate[i.date] = byDate[i.date] || []).push(i); });
-
-        const now = new Date();
-        const todayKey = keyOf(now.getFullYear(), now.getMonth(), now.getDate());
-        let view = new Date(now.getFullYear(), now.getMonth(), 1);
-        let selected = null;
-
-        function prettyWhen(raw) {
-            const d = new Date(raw);
-            if (isNaN(d)) return raw;
-            const date = d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
-            if (String(raw).length <= 10) return date;
-            return date + ', ' + d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
-        }
-
-        function renderMini() {
-            const box = document.getElementById('tcMiniCalendar');
-            if (!box) return;
-            const y = now.getFullYear(), m = now.getMonth();
-            let html = ['S','M','T','W','T','F','S'].map(d => '<div class="tc-hdr">' + d + '</div>').join('');
-            for (let i = 0; i < new Date(y, m, 1).getDay(); i++) html += '<div></div>';
-            const last = new Date(y, m + 1, 0).getDate();
-            for (let d = 1; d <= last; d++) {
-                const k = keyOf(y, m, d);
-                html += '<div class="tc-d' + (k === todayKey ? ' today' : '') + '"><span>' + d + '</span>' + (byDate[k] ? '<i></i>' : '') + '</div>';
-            }
-            box.innerHTML = html;
-        }
-
-        function renderGrid() {
-            const grid = document.getElementById('tcGrid');
-            if (!grid) return;
-            const y = view.getFullYear(), m = view.getMonth();
-            document.getElementById('tcMonthYear').textContent = MONTHS[m] + ' ' + y;
-            let html = '';
-            for (let i = 0; i < new Date(y, m, 1).getDay(); i++) html += '<div class="tc-cell empty"></div>';
-            const last = new Date(y, m + 1, 0).getDate();
-            for (let d = 1; d <= last; d++) {
-                const k = keyOf(y, m, d);
-                const items = byDate[k] || [];
-                const dots = items.slice(0, 6).map(i => '<i style="background:' + KIND[i.type].color + '"></i>').join('');
-                html += '<div class="tc-cell' + (k === todayKey ? ' today' : '') + (k === selected ? ' selected' : '') + '" onclick="tcSelect(\'' + k + '\')">' +
-                        '<span class="n">' + d + '</span><div class="tc-dots">' + dots + '</div></div>';
-            }
-            grid.innerHTML = html;
-        }
-
-        function renderAgenda() {
-            const list = document.getElementById('tcAgenda');
-            if (!list) return;
-            let items;
-            if (selected) {
-                items = byDate[selected] || [];
-                document.getElementById('tcAgendaTitle').textContent = prettyWhen(selected);
-                document.getElementById('tcAgendaReset').style.display = '';
-            } else {
-                items = DATA.filter(i => i.date >= todayKey).sort((a, b) => a.when.localeCompare(b.when)).slice(0, 30);
-                document.getElementById('tcAgendaTitle').textContent = 'Upcoming';
-                document.getElementById('tcAgendaReset').style.display = 'none';
-            }
-            list.innerHTML = items.length ? items.map(i => {
-                const k = KIND[i.type];
-                return '<div class="tc-item" style="border-left-color:' + k.color + '"><div class="k" style="color:' + k.color + '">' + k.label + (i.type !== 'event' && i.sub ? ' \u2022 ' + esc(i.sub) : '') + '</div>' +
-                       '<h4>' + esc(i.title) + '</h4><div class="w">' + esc(prettyWhen(i.when)) + '</div></div>';
-            }).join('') : '<div class="tc-empty">' + (selected ? 'Nothing scheduled on this day.' : 'Nothing coming up.') + '</div>';
-        }
-
-        window.tcChangeMonth = function (dir) { view = new Date(view.getFullYear(), view.getMonth() + dir, 1); renderGrid(); };
-        window.tcSelect = function (k) { selected = (k && k === selected) ? null : k; renderGrid(); renderAgenda(); };
-
-        renderMini(); renderGrid(); renderAgenda();
-    })();
-</script>
-
-    <!-- ===== NO-SCROLL HOME (desktop): the dashboard home screen always fits the window ===== -->
-    <style>
-        @media (min-width: 769px) {
-            /* lock page scrolling ONLY while the home view is showing (other pages still scroll) */
-            html:has(#view-home:not([style*="display: none"])),
-            body:has(#view-home:not([style*="display: none"])) { overflow: hidden !important; height: 100vh !important; }
-            #view-home { padding-top: 0 !important; }
-            #view-home .home-container { padding-top: 28px !important; gap: 18px !important; align-content: start !important; }
-            #view-home #mobile-search-reorder { margin-bottom: 10px !important; }
-            #view-home .school-large-logo { margin-bottom: 10px !important; }
-        }
-    </style>
-    <script>
-        // If the home screen is still taller than the window (small laptop screens), shrink it a little so it never needs scrolling
-        (function () {
-            function fitHome() {
-                const home = document.getElementById('view-home');
-                const box = home && home.querySelector('.home-container');
-                if (!box) return;
-                box.style.zoom = '';
-                if (window.innerWidth <= 768 || home.style.display === 'none') return;
-                const need = box.getBoundingClientRect().bottom + window.scrollY + 12;
-                if (need > window.innerHeight) box.style.zoom = Math.max(0.5, window.innerHeight / need).toFixed(3);
-            }
-            const original = window.switchViewAndRemember;
-            if (typeof original === 'function') {
-                window.switchViewAndRemember = function () {
-                    const r = original.apply(this, arguments);
-                    fitHome();
-                    return r;
-                };
-            }
-            window.addEventListener('load', fitHome);
-            window.addEventListener('resize', fitHome);
-            document.addEventListener('DOMContentLoaded', () => setTimeout(fitHome, 0));
-            setTimeout(fitHome, 300);
-        })();
-    </script>
 </body>
 </html>

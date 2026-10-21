@@ -12,29 +12,21 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 from setup_db import setup_database
-from tools.sync_masterlist import sync_masterlist, sync_staff, start_watcher
+import sys
+_HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(_HERE, 'tools'))   # sync_masterlist.py may live in the 'tools' folder
+sys.path.insert(0, _HERE)                          # ...or next to app.py - both work
+from sync_masterlist import sync_masterlist, sync_staff, start_watcher
 
 # 1. Import the Cloudflare tool
-import os
-
-# Only use cloudflared when running locally, not on Render
-if os.environ.get('RENDER') is None:
-    try:
-        from flask_cloudflared import run_with_cloudflared
-        # run_with_cloudflared(app)  # Keep your existing usage if any
-    except ImportError:
-        pass
+from flask_cloudflared import run_with_cloudflared
 
 load_dotenv()
 app = Flask(__name__)
 
-# Wrap with Cloudflare ONLY when running locally (not on Render)
-if os.environ.get('RENDER') is None:
-    try:
-        from flask_cloudflared import run_with_cloudflared
-        run_with_cloudflared(app)
-    except Exception:
-        pass
+# 2. Wrap your app with Cloudflare immediately after creating it
+run_with_cloudflared(app)
+
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 if not app.secret_key or len(app.secret_key) < 32:
     raise RuntimeError('FLASK_SECRET_KEY is missing or too short in the .env file (use at least 32 random characters).')
@@ -112,6 +104,10 @@ def admin_required():
         return "Access Denied: Master Admins Only", 403
     return None
 
+def is_admin_session(conn):
+    row = conn.execute('SELECT is_admin FROM teachers WHERE id = ?', (session.get('teacher_id'),)).fetchone()
+    return bool(row and row['is_admin'] == 1)
+
 def teacher_owns_quiz(conn, quiz_id):
     row = conn.execute('SELECT 1 FROM quizzes WHERE id = ? AND teacher_id = ?', (quiz_id, session['teacher_id'])).fetchone()
     return row is not None
@@ -121,24 +117,18 @@ def teacher_owns_subject(conn, subject_id):
     return row is not None
 
 def staff_is_allowed(staff_id):
-    """Returns the person's CURRENT role from the Excel list ('teacher' / 'sslg'), or None if they were removed.
-    Retries a few times, because the Excel auto-sync can briefly empty the table while it reloads
-    (that made people get logged out right after posting)."""
-    for attempt in range(4):
-        conn = get_db_connection()
-        try:
-            row = conn.execute('SELECT role FROM allowed_staff WHERE lower(staff_id) = lower(?)', (staff_id,)).fetchone()
-            if row:
-                return row['role']
-        except sqlite3.OperationalError:
-            return True      # list not created yet / database busy: do not lock anybody out
-        finally:
-            conn.close()
-        time.sleep(0.4)      # not found: wait a moment and look again before deciding they were removed
-    return None
+    """Returns the person's CURRENT role from the Excel list ('teacher' / 'sslg'), or None if they were removed."""
+    conn = get_db_connection()
+    try:
+        row = conn.execute('SELECT role FROM allowed_staff WHERE staff_id = ?', (staff_id,)).fetchone()
+        return row['role'] if row else None
+    except sqlite3.OperationalError:
+        return True      # list not created yet: do not lock anybody out
+    finally:
+        conn.close()
 
 # SSLG accounts can ONLY use these pages (post events / announcements). Everything else is refused.
-SSLG_ALLOWED = {'teacher_dashboard', 'add_announcement', 'add_event', 'delete_event',
+SSLG_ALLOWED = {'teacher_dashboard', 'add_announcement', 'add_event', 'delete_event', 'delete_announcement', 'api_latest',
                 'logout', 'teacher_login', 'teacher_register', 'login', 'register'}
 
 @app.before_request
@@ -213,6 +203,13 @@ def normalize_section(text):
     """11-Carina, 11 carina and 11carina are treated as the same."""
     return re.sub(r'[^a-z0-9]', '', (text or '').lower())
 
+# The website is for Grade 11 students. These sections are allowed too (the research group, Grade 12).
+EXCEPTION_SECTIONS = {'12leda'}
+
+def is_allowed_record(record):
+    """Grade 11 student, or a member of an exception section (e.g. 12-Leda)."""
+    return bool(record) and (record['grade_level'] == 11 or normalize_section(record['section']) in EXCEPTION_SECTIONS)
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -243,14 +240,14 @@ def register():
             flash('Sign up is not ready yet. Please tell your teacher.')
             return render_template('register.html')
 
-        # Only Grade 11 and 12 students on the masterlist, with matching name AND section, can sign up.
+        # Only Grade 11 students on the masterlist, with matching name AND section, can sign up.
         # One shared message, so nobody can use this form to find out which LRNs are on the list.
-        if (not record or record['grade_level'] not in (11, 12)
+        if (not is_allowed_record(record)
                 or normalize_name(full_name) != normalize_name(record['full_name'])
                 or normalize_section(section) != normalize_section(record['section'])):
             conn.close()
             record_fail('reg:' + client_ip())
-            flash('We could not verify your details. Please check your LRN, full name and section (Grade 11 and 12 students only).')
+            flash('We could not verify your details. Please check your LRN, full name and section (Grade 11 students only).')
             return render_template('register.html')
 
         if conn.execute('SELECT 1 FROM students WHERE lrn = ?', (lrn,)).fetchone():
@@ -422,12 +419,13 @@ def dashboard():
         WHERE e.student_id = ?
     ''', (student_id,)).fetchall()
     
+    # School-wide announcements (subject_id 0) + announcements of the classes this student joined
     announcements = conn.execute('''
-        SELECT a.*, s.subject_name 
-        FROM announcements a 
-        JOIN enrollments e ON a.subject_id = e.subject_id 
-        JOIN subjects s ON a.subject_id = s.id 
-        WHERE e.student_id = ? 
+        SELECT a.*, IFNULL(s.subject_name, 'School-Wide') AS subject_name
+        FROM announcements a
+        LEFT JOIN subjects s ON a.subject_id = s.id
+        WHERE a.subject_id = 0 OR a.subject_id IS NULL
+           OR a.subject_id IN (SELECT subject_id FROM enrollments WHERE student_id = ?)
         ORDER BY a.id DESC
     ''', (student_id,)).fetchall()
     
@@ -563,14 +561,14 @@ def teacher_dashboard():
             FROM allowed_lrns a
             LEFT JOIN students st ON st.lrn = a.lrn
             LEFT JOIN sections sec ON st.section_id = sec.id
-            WHERE a.grade_level IN (11, 12)
+            WHERE a.grade_level = 11
         ''').fetchall()
         others = conn.execute('''
             SELECT st.lrn, st.full_name, NULL AS official_section,
                    st.id AS id, st.section_id, sec.section_name, 1 AS signed_up
             FROM students st
             LEFT JOIN sections sec ON st.section_id = sec.id
-            WHERE st.lrn NOT IN (SELECT lrn FROM allowed_lrns WHERE grade_level IN (11, 12))
+            WHERE st.lrn NOT IN (SELECT lrn FROM allowed_lrns WHERE grade_level = 11)
         ''').fetchall()
     except sqlite3.OperationalError:
         # masterlist not imported yet: show only the students who signed up
@@ -595,14 +593,25 @@ def teacher_dashboard():
 
     sections = conn.execute('SELECT * FROM sections WHERE teacher_id = ? ORDER BY year_level, section_name', (t_id,)).fetchall()
     subjects = conn.execute('SELECT * FROM subjects WHERE teacher_id = ?', (t_id,)).fetchall()
-    announcements = conn.execute('SELECT a.*, s.subject_name FROM announcements a JOIN subjects s ON a.subject_id = s.id WHERE a.teacher_id = ? ORDER BY a.id DESC', (t_id,)).fetchall()
+    # Teachers, SSLG and the admin all see the SAME announcements and events (whoever posted them)
+    announcements = conn.execute('''
+        SELECT a.*, IFNULL(s.subject_name, 'School-Wide') AS subject_name,
+               IFNULL(NULLIF(t.full_name, ''), IFNULL(t.username, 'Unknown')) AS poster
+        FROM announcements a
+        LEFT JOIN subjects s ON a.subject_id = s.id
+        LEFT JOIN teachers t ON a.teacher_id = t.id
+        ORDER BY a.id DESC
+    ''').fetchall()
     events = conn.execute('''
-        SELECT ev.*, IFNULL(s.subject_name, 'School-Wide Event') as subject_name 
-        FROM events ev 
-        LEFT JOIN subjects s ON ev.subject_id = s.id 
-        WHERE ev.teacher_id = ? 
+        SELECT ev.*, IFNULL(s.subject_name, 'School-Wide Event') as subject_name,
+               IFNULL(NULLIF(t.full_name, ''), IFNULL(t.username, 'Unknown')) AS poster
+        FROM events ev
+        LEFT JOIN subjects s ON ev.subject_id = s.id
+        LEFT JOIN teachers t ON ev.teacher_id = t.id
         ORDER BY ev.event_date ASC
-    ''', (t_id,)).fetchall()
+    ''').fetchall()
+    me = conn.execute('SELECT is_admin FROM teachers WHERE id = ?', (t_id,)).fetchone()
+    is_admin = bool(me and me['is_admin'] == 1)
     # WHO answered each of this teacher's events: {event_id: {'going': [...], 'interested': [...], 'not_going': [...]}}
     responses = {}
     for r in conn.execute('''
@@ -610,9 +619,8 @@ def teacher_dashboard():
         FROM event_reactions er
         JOIN events ev ON ev.id = er.event_id
         JOIN students st ON st.id = er.student_id
-        WHERE ev.teacher_id = ?
         ORDER BY st.full_name
-    ''', (t_id,)).fetchall():
+    ''').fetchall():
         bucket = responses.setdefault(r['event_id'], {'going': [], 'interested': [], 'not_going': []})
         bucket.setdefault(r['action'], []).append({'name': r['full_name'], 'lrn': None if role == 'sslg' else r['lrn']})
 
@@ -626,7 +634,7 @@ def teacher_dashboard():
                            signup_stats=signup_stats, students=all_students, sections=sections, 
                            subjects=subjects, announcements=announcements, events=events, 
                            assignments=assignments, quizzes=quizzes,
-                           responses=responses)
+                           responses=responses, is_admin=is_admin, my_id=t_id)
 
 @app.route('/assign_section', methods=['POST'])
 def assign_section():
@@ -1323,14 +1331,53 @@ def delete_event(event_id):
     if 'teacher_id' not in session: return redirect(url_for('teacher_login'))
     
     conn = get_db_connection()
-    # Allows the teacher who posted it (whether school-wide or class-specific) to delete it
-    conn.execute('DELETE FROM event_reactions WHERE event_id IN (SELECT id FROM events WHERE id = ? AND teacher_id = ?)', (event_id, session['teacher_id']))
-    conn.execute('DELETE FROM events WHERE id = ? AND teacher_id = ?', (event_id, session['teacher_id']))
+    # Everyone SEES every event, but only the person who posted it (or the admin) can delete it
+    owner_clause = '' if is_admin_session(conn) else ' AND teacher_id = %d' % int(session['teacher_id'])
+    conn.execute('DELETE FROM event_reactions WHERE event_id IN (SELECT id FROM events WHERE id = ?' + owner_clause + ')', (event_id,))
+    conn.execute('DELETE FROM events WHERE id = ?' + owner_clause, (event_id,))
     conn.commit()
     conn.close()
     
     flash('Event deleted successfully.')
     return redirect(url_for('teacher_dashboard'))
+
+@app.route('/teacher/announcement/delete/<int:ann_id>', methods=['POST'])
+def delete_announcement(ann_id):
+    if 'teacher_id' not in session: return redirect(url_for('teacher_login'))
+    conn = get_db_connection()
+    owner_clause = '' if is_admin_session(conn) else ' AND teacher_id = %d' % int(session['teacher_id'])
+    conn.execute('DELETE FROM announcements WHERE id = ?' + owner_clause, (ann_id,))
+    conn.commit()
+    conn.close()
+    flash('Announcement deleted.')
+    return redirect(url_for('teacher_dashboard'))
+
+# --- NOTIFICATIONS: the browser asks this every ~30 seconds and shows a badge / pop-up for new posts ---
+@app.route('/api/latest')
+def api_latest():
+    conn = get_db_connection()
+    try:
+        if 'teacher_id' in session:
+            me = int(session['teacher_id'])
+            ann = conn.execute('SELECT a.id, a.title, IFNULL(NULLIF(t.full_name, ""), t.username) AS who FROM announcements a LEFT JOIN teachers t ON a.teacher_id = t.id WHERE IFNULL(a.teacher_id, 0) != ? ORDER BY a.id DESC LIMIT 20', (me,)).fetchall()
+            evs = conn.execute('SELECT e.id, e.title, IFNULL(NULLIF(t.full_name, ""), t.username) AS who FROM events e LEFT JOIN teachers t ON e.teacher_id = t.id WHERE IFNULL(e.teacher_id, 0) != ? ORDER BY e.id DESC LIMIT 20', (me,)).fetchall()
+            kind = 'staff'
+        elif 'student_id' in session:
+            sid = session['student_id']
+            ann = conn.execute('''SELECT a.id, a.title, '' AS who FROM announcements a
+                WHERE a.subject_id = 0 OR a.subject_id IS NULL OR a.subject_id IN (SELECT subject_id FROM enrollments WHERE student_id = ?)
+                ORDER BY a.id DESC LIMIT 20''', (sid,)).fetchall()
+            evs = conn.execute('''SELECT e.id, e.title, '' AS who FROM events e
+                WHERE e.is_school_wide = 1 OR e.subject_id = 0 OR e.subject_id IN (SELECT subject_id FROM enrollments WHERE student_id = ?)
+                ORDER BY e.id DESC LIMIT 20''', (sid,)).fetchall()
+            kind = 'student'
+        else:
+            return jsonify({'kind': None, 'announcements': [], 'events': []})
+        return jsonify({'kind': kind,
+                        'announcements': [dict(r) for r in ann],
+                        'events': [dict(r) for r in evs]})
+    finally:
+        conn.close()
 
 if __name__ == '__main__':
     app.run(debug=False, port=5000)
