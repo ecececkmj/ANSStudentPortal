@@ -18,14 +18,22 @@ sys.path.insert(0, os.path.join(_HERE, 'tools'))   # sync_masterlist.py may live
 sys.path.insert(0, _HERE)                          # ...or next to app.py - both work
 from sync_masterlist import sync_masterlist, sync_staff, start_watcher
 
-# 1. Import the Cloudflare tool
-from flask_cloudflared import run_with_cloudflared
+# 1. Optionally import the Cloudflare tool for local dev
+try:
+    from flask_cloudflared import run_with_cloudflared
+    has_cloudflared = True
+except ImportError:
+    has_cloudflared = False
 
 load_dotenv()
 app = Flask(__name__)
 
-# 2. Wrap your app with Cloudflare immediately after creating it
-run_with_cloudflared(app)
+# 2. Only wrap your app if running locally and the module exists
+if has_cloudflared and os.getenv('RENDER') != 'true':
+    try:
+        run_with_cloudflared(app)
+    except Exception:
+        pass
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 if not app.secret_key or len(app.secret_key) < 32:
