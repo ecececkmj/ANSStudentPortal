@@ -394,7 +394,54 @@
             .tc-mini { gap: 4px; }
         }
     </style>
+    <style>
+        /* ===== CALENDAR + PERSONAL NOTES (same look as the student dashboard) ===== */
+        .custom-calendar { width: 100%; color: white; }
+        .cal-days-row { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; color: #FFD700; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+        .cal-cell { background: rgba(0,0,0,0.4); height: 100px; border-radius: 6px; padding: 8px; border: 1px solid rgba(255,255,255,0.05); position: relative; transition: 0.2s; display: flex; flex-direction: column; min-width: 0; cursor: pointer; }
+        .cal-cell:hover { background: rgba(255,255,255,0.05); }
+        .cal-empty { background: transparent; border: none; cursor: default; }
+        .cal-cell.today { border: 2px solid #FFD700; background: rgba(255,215,0,0.1); }
+        .cal-date { font-weight: bold; font-size: 1rem; color: #ccc; display: block; margin-bottom: 8px; text-align: right; flex-shrink: 0; }
+        .cal-cell.today .cal-date { color: #FFD700; font-size: 1.1rem; }
+        .dot-container { display: flex; flex-direction: column; gap: 4px; overflow-y: hidden; flex-grow: 1; padding-right: 2px; }
+        .cal-cell:hover .dot-container { overflow-y: auto; }
+        .dot-container::-webkit-scrollbar { width: 4px; }
+        .dot-container::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.5); border-radius: 4px; }
+        .event-dot { font-size: 0.8rem; padding: 3px 6px; border-radius: 4px; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold; flex-shrink: 0; max-width: 100%; box-sizing: border-box; }
+        .event-campus { background: rgba(52, 152, 219, 0.8); border-left: 2px solid #3498db; }
+        .event-personal { background: #e67e22; border-left: 2px solid rgba(255,255,255,0.6); color: white; }
+        .agenda-personal { background: rgba(0,0,0,0.6); padding: 12px 14px; border-radius: 8px; border-left: 5px solid #FFD700; position: relative; }
+        .agenda-personal .k { font-size: 0.8rem; font-weight: bold; color: #FFD700; }
+        .agenda-personal h4 { color: white; margin: 4px 0; font-size: 1rem; padding-right: 60px; }
+        .agenda-personal .w { color: #ccc; font-size: 0.85rem; }
+        .agenda-personal .d { color: #aaa; font-size: 0.85rem; margin-top: 6px; font-style: italic; }
+        .agenda-personal .del { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.5); color: #ffcccc; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .agenda-personal .del:hover { background: #e74c3c; color: white; }
+        .pe-swatch { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; transition: 0.15s; }
+        .pe-swatch:hover { transform: scale(1.15); }
+        .pe-swatch.selected { border-color: #fff; box-shadow: 0 0 0 2px #FFD700; }
+        /* Popup (hidden until a day is clicked) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 10000; display: none; align-items: center; justify-content: center; }
+        .modal-box { background: linear-gradient(135deg, rgba(30,6,10,0.95), rgba(20,2,5,0.98)); border: 1px solid rgba(255, 215, 0, 0.3); border-top: 4px solid #FFD700; border-radius: 12px; padding: 30px; width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto; box-shadow: 0 15px 40px rgba(255, 215, 0, 0.15); }
+        @media (max-width: 768px) {
+            .cal-days-row { gap: 3px; font-size: 0.875rem; padding-bottom: 5px; }
+            .cal-grid { gap: 3px; }
+            .cal-cell { height: 85px; padding: 3px; border-radius: 4px; }
+            .cal-date { font-size: 0.875rem; margin-bottom: 3px; }
+            .event-dot { padding: 2px 4px; }
+            .cal-cell .dot-container { overflow-y: auto; }
+            .tc-scroll { overflow: visible; }
+        }
+        @media (min-width: 769px) {
+            .cal-cell { height: clamp(60px, calc((100vh - 330px) / 6), 90px); padding: 4px 6px; }
+            .cal-date { font-size: 0.85rem; margin-bottom: 2px; }
+            .event-dot { font-size: 0.7rem; padding: 2px 5px; }
+        }
+    </style>
 </head>
+
 <body style="background: url('{{ url_for('static', filename='bg.jpg') }}') no-repeat center center fixed; background-size: cover; background-color: #000; margin: 0; min-height: 100vh;">
     <!-- PHONE MENU BUTTON (three lines, top-right) -->
     <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
@@ -422,6 +469,7 @@
             </span>
             Calendar
         </a>
+		
         
         <a id="nav-announcements" class="side-link" onclick="switchViewAndRemember('announcements')">
             <span class="side-icon" style="margin-bottom: 5px; display: flex;">
@@ -867,6 +915,7 @@
 
             <div class="page-header-box">
                 <h2>Calendar</h2>
+                <p style="color:#ddd; margin:6px 0 0 0;">Monitor today's date, school events, and your own notes. Tap any day to add a note.</p>
             </div>
 
             <div class="tc-layout">
@@ -877,19 +926,21 @@
                         <button type="button" class="btn-gold tc-nav" onclick="tcChangeMonth(1)" aria-label="Next month">&rarr;</button>
                     </div>
                     <div class="tc-scroll">
-                        <div class="tc-days"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
-                        <div id="tcGrid" class="tc-grid"></div>
+                        <div class="custom-calendar">
+                            <div class="cal-days-row"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
+                            <div id="tcGrid" class="cal-grid"></div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="tc-side">
                     <div class="tc-panel tc-legend">
-                        <span><i style="background:#3498db"></i>Events</span>
+                        <span><i style="background:#3498db"></i>Campus Events</span>
+                        <span><i style="background:#e67e22"></i>My Notes</span>
                     </div>
                     <div class="tc-panel" style="flex-grow: 1;">
                         <div class="tc-agenda-head">
-                            <h3 id="tcAgendaTitle">Upcoming</h3>
-                            <button type="button" id="tcAgendaReset" class="tc-link" onclick="tcSelect(null)" style="display:none;">Show upcoming</button>
+                            <h3 id="tcAgendaTitle">Upcoming Details</h3>
                         </div>
                         <div id="tcAgenda" class="tc-agenda"></div>
                     </div>
@@ -1003,6 +1054,42 @@
     </section>
 
     </div> <!-- THIS IS THE NEW CLOSING DIV FOR THE MAIN CONTENT WRAPPER -->
+
+    <!-- PERSONAL CALENDAR NOTE POPUP -->
+    <div id="personalEventModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="color: #FFD700; margin-top: 0; font-size: 1.5rem; border-bottom: 1px solid rgba(255,215,0,0.3)";>Add a Calendar Note</h3>
+            <p style="color: #aaa; font-size: 0.875rem; margin-bottom: 20px;">Only you can see this note.</p>
+            
+            <label style="color: #FFD700; font-size: 0.875rem; font-weight: bold; text-transform: none;">Note Title</label>
+            <input type="text" id="pe-title" class="lms-input" placeholder="e.g., Study for quiz" style="border-color: rgba(255,215,0,0.5); margin-bottom: 15px;" required>
+            
+            <label style="color: #FFD700; font-size: 0.875rem; font-weight: bold; text-transform: none;">Date</label>
+            <input type="date" id="pe-date" class="lms-input" style="border-color: rgba(255,215,0,0.5); color-scheme: dark; margin-bottom: 15px;" required>
+            
+            <label style="color: #FFD700; font-size: 0.875rem; font-weight: bold; text-transform: none;">Notes / Details</label>
+            <textarea id="pe-desc" class="lms-input" rows="3" placeholder="Any extra details..." style="border-color: rgba(255,215,0,0.5); margin-bottom: 15px;"></textarea>
+            
+            <label style="color: #FFD700; font-size: 0.875rem; font-weight: bold; text-transform: none;">Color</label>
+            <div id="pe-color-row" style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 8px 0 20px 0;">
+                <button type="button" class="pe-swatch" data-color="#e74c3c" style="background:#e74c3c" title="Red"></button>
+                <button type="button" class="pe-swatch" data-color="#e67e22" style="background:#e67e22" title="Orange"></button>
+                <button type="button" class="pe-swatch" data-color="#27ae60" style="background:#27ae60" title="Green"></button>
+                <button type="button" class="pe-swatch" data-color="#1abc9c" style="background:#1abc9c" title="Teal"></button>
+                <button type="button" class="pe-swatch" data-color="#e84393" style="background:#e84393" title="Pink"></button>
+                <button type="button" class="pe-swatch" data-color="#7f8c8d" style="background:#7f8c8d" title="Gray"></button>
+                <label style="display:flex; align-items:center; gap:6px; color:#ccc; font-size:0.875rem; cursor:pointer; margin-left:4px;">
+                    <input type="color" id="pe-color" value="#e67e22" style="width:32px; height:28px; border:none; padding:0; background:none; cursor:pointer;"> Custom
+                </label>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button onclick="document.getElementById('personalEventModal').style.display='none';" style="flex: 1; background: rgba(0,0,0,0.5); color: white; border: 1px solid #555; padding: 12px; border-radius: 6px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(0,0,0,0.5)'">Cancel</button>
+                <button onclick="savePersonalEvent()" style="flex: 1; background: #FFD700; color: #800000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(255,215,0,0.3);">Save Note</button>
+            </div>
+        </div>
+    </div>
+
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 
@@ -1288,46 +1375,56 @@
 })();
 </script>
 <script>
-    // ===== Calendar: events only =====
+    // ===== Calendar: school events + personal notes (same as the student dashboard) =====
     (function () {
-        const DATA = [
-            {% for ev in events %}{ date: {{ (ev.event_date or '')[:10] | tojson }}, type: 'event', title: {{ ev.title | tojson }}, when: {{ (ev.event_date or '') | tojson }}, sub: {{ ev.subject_name | tojson }} },
+        const NOTE_KEY = 'teacherPersonalEvents';
+        const SCHOOL = [
+            {% for ev in events %}{ date: {{ (ev.event_date or '')[:10] | tojson }}, type: 'event', title: {{ ev.title | tojson }}, when: {{ (ev.event_date or '') | tojson }} },
             {% endfor %}
         ];
-        const KIND = {
-            event: { label: 'Event', color: '#3498db' }
-        };
         const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
         const pad = n => String(n).padStart(2, '0');
         const keyOf = (y, m, d) => y + '-' + pad(m + 1) + '-' + pad(d);
         const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-        const byDate = {};
-        DATA.forEach(i => { (byDate[i.date] = byDate[i.date] || []).push(i); });
+        function loadNotes() { try { return JSON.parse(localStorage.getItem(NOTE_KEY)) || []; } catch (e) { return []; } }
+        function storeNotes(a) { try { localStorage.setItem(NOTE_KEY, JSON.stringify(a)); } catch (e) {} }
+        function allItems() {
+            const notes = loadNotes().map(n => ({ date: n.date, type: 'note', title: n.title, when: n.date, color: n.color || '#e67e22', desc: n.desc, id: n.id }));
+            return SCHOOL.concat(notes);
+        }
+        function groupByDate(items) { const g = {}; items.forEach(i => { (g[i.date] = g[i.date] || []).push(i); }); return g; }
 
         const now = new Date();
         const todayKey = keyOf(now.getFullYear(), now.getMonth(), now.getDate());
         let view = new Date(now.getFullYear(), now.getMonth(), 1);
-        let selected = null;
 
         function prettyWhen(raw) {
             const d = new Date(raw);
             if (isNaN(d)) return raw;
-            const date = d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+            const date = d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
             if (String(raw).length <= 10) return date;
             return date + ', ' + d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+        }
+
+        function textColorFor(hex) {
+            let h = String(hex).replace('#', '');
+            if (h.length === 3) h = h.split('').map(c => c + c).join('');
+            const r = parseInt(h.substr(0, 2), 16), g = parseInt(h.substr(2, 2), 16), b = parseInt(h.substr(4, 2), 16);
+            return ((r * 299 + g * 587 + b * 114) / 1000) > 150 ? '#1e060a' : '#ffffff';
         }
 
         function renderMini() {
             const box = document.getElementById('tcMiniCalendar');
             if (!box) return;
+            const by = groupByDate(allItems());
             const y = now.getFullYear(), m = now.getMonth();
             let html = ['S','M','T','W','T','F','S'].map(d => '<div class="tc-hdr">' + d + '</div>').join('');
             for (let i = 0; i < new Date(y, m, 1).getDay(); i++) html += '<div></div>';
             const last = new Date(y, m + 1, 0).getDate();
             for (let d = 1; d <= last; d++) {
                 const k = keyOf(y, m, d);
-                html += '<div class="tc-d' + (k === todayKey ? ' today' : '') + '"><span>' + d + '</span>' + (byDate[k] ? '<i></i>' : '') + '</div>';
+                html += '<div class="tc-d' + (k === todayKey ? ' today' : '') + '"><span>' + d + '</span>' + (by[k] ? '<i></i>' : '') + '</div>';
             }
             box.innerHTML = html;
         }
@@ -1335,17 +1432,25 @@
         function renderGrid() {
             const grid = document.getElementById('tcGrid');
             if (!grid) return;
+            const by = groupByDate(allItems());
             const y = view.getFullYear(), m = view.getMonth();
             document.getElementById('tcMonthYear').textContent = MONTHS[m] + ' ' + y;
             let html = '';
-            for (let i = 0; i < new Date(y, m, 1).getDay(); i++) html += '<div class="tc-cell empty"></div>';
+            for (let i = 0; i < new Date(y, m, 1).getDay(); i++) html += '<div class="cal-cell cal-empty"></div>';
             const last = new Date(y, m + 1, 0).getDate();
             for (let d = 1; d <= last; d++) {
                 const k = keyOf(y, m, d);
-                const items = byDate[k] || [];
-                const dots = items.slice(0, 6).map(i => '<i style="background:' + KIND[i.type].color + '"></i>').join('');
-                html += '<div class="tc-cell' + (k === todayKey ? ' today' : '') + (k === selected ? ' selected' : '') + '" onclick="tcSelect(\'' + k + '\')">' +
-                        '<span class="n">' + d + '</span><div class="tc-dots">' + dots + '</div></div>';
+                let pills = '';
+                (by[k] || []).forEach(i => {
+                    const short = i.title.length > 12 ? i.title.substring(0, 12) + '...' : i.title;
+                    if (i.type === 'event') {
+                        pills += '<div class="event-dot event-campus" title="' + esc(i.title) + '">' + esc(short) + '</div>';
+                    } else {
+                        pills += '<div class="event-dot event-personal" style="background:' + esc(i.color) + '; color:' + textColorFor(i.color) + ';" title="Tap to delete" onclick="event.stopPropagation(); tcDeleteNote(' + i.id + ');">\uD83D\uDDD1\uFE0F ' + esc(short) + '</div>';
+                    }
+                });
+                html += '<div class="cal-cell' + (k === todayKey ? ' today' : '') + '" onclick="openPersonalEventModal(\'' + k + '\')" title="Tap to add a note">' +
+                        '<span class="cal-date">' + d + '</span><div class="dot-container">' + pills + '</div></div>';
             }
             grid.innerHTML = html;
         }
@@ -1353,27 +1458,63 @@
         function renderAgenda() {
             const list = document.getElementById('tcAgenda');
             if (!list) return;
-            let items;
-            if (selected) {
-                items = byDate[selected] || [];
-                document.getElementById('tcAgendaTitle').textContent = prettyWhen(selected);
-                document.getElementById('tcAgendaReset').style.display = '';
-            } else {
-                items = DATA.filter(i => i.date >= todayKey).sort((a, b) => a.when.localeCompare(b.when)).slice(0, 30);
-                document.getElementById('tcAgendaTitle').textContent = 'Upcoming';
-                document.getElementById('tcAgendaReset').style.display = 'none';
-            }
+            const items = allItems().filter(i => i.date >= todayKey).sort((a, b) => String(a.when).localeCompare(String(b.when))).slice(0, 40);
             list.innerHTML = items.length ? items.map(i => {
-                const k = KIND[i.type];
-                return '<div class="tc-item" style="border-left-color:' + k.color + '"><div class="k" style="color:' + k.color + '">' + k.label + (i.type !== 'event' && i.sub ? ' \u2022 ' + esc(i.sub) : '') + '</div>' +
-                       '<h4>' + esc(i.title) + '</h4><div class="w">' + esc(prettyWhen(i.when)) + '</div></div>';
-            }).join('') : '<div class="tc-empty">' + (selected ? 'Nothing scheduled on this day.' : 'Nothing coming up.') + '</div>';
+                if (i.type === 'event') {
+                    return '<div class="tc-item" style="border-left-color:#3498db"><div class="k" style="color:#3498db">Campus Event</div><h4>' + esc(i.title) + '</h4><div class="w">' + esc(prettyWhen(i.when)) + '</div></div>';
+                }
+                return '<div class="agenda-personal" style="border-left-color:' + esc(i.color) + ';"><button type="button" class="del" onclick="tcDeleteNote(' + i.id + ', true)">Delete</button>' +
+                       '<div class="k">My Note</div><h4>' + esc(i.title) + '</h4><div class="w">\uD83D\uDCC5 ' + esc(prettyWhen(i.when)) + '</div>' +
+                       (i.desc ? '<div class="d">' + esc(i.desc) + '</div>' : '') + '</div>';
+            }).join('') : '<div class="tc-empty">No upcoming events or notes.</div>';
         }
 
-        window.tcChangeMonth = function (dir) { view = new Date(view.getFullYear(), view.getMonth() + dir, 1); renderGrid(); };
-        window.tcSelect = function (k) { selected = (k && k === selected) ? null : k; renderGrid(); renderAgenda(); };
+        function refreshAll() { renderMini(); renderGrid(); renderAgenda(); }
 
-        renderMini(); renderGrid(); renderAgenda();
+        window.tcChangeMonth = function (dir) { view = new Date(view.getFullYear(), view.getMonth() + dir, 1); renderGrid(); };
+
+        window.tcDeleteNote = function (id, skipConfirm) {
+            const notes = loadNotes();
+            const n = notes.find(x => x.id === id);
+            if (!n) return;
+            if (!skipConfirm && !confirm('Do you want to delete your note: ' + n.title + '?')) return;
+            storeNotes(notes.filter(x => x.id !== id));
+            refreshAll();
+        };
+
+        window.selectNoteColor = function (hex) {
+            document.getElementById('pe-color').value = hex;
+            document.querySelectorAll('.pe-swatch').forEach(b => b.classList.toggle('selected', b.dataset.color.toLowerCase() === hex.toLowerCase()));
+        };
+
+        window.openPersonalEventModal = function (dateString) {
+            selectNoteColor('#e67e22');
+            document.getElementById('pe-title').value = '';
+            document.getElementById('pe-date').value = dateString;
+            document.getElementById('pe-desc').value = '';
+            document.getElementById('personalEventModal').style.display = 'flex';
+        };
+
+        window.savePersonalEvent = function () {
+            const title = document.getElementById('pe-title').value.trim();
+            const date = document.getElementById('pe-date').value;
+            const desc = document.getElementById('pe-desc').value.trim();
+            const color = document.getElementById('pe-color').value || '#e67e22';
+            if (!title || !date) { alert('Please enter a Title and Date.'); return; }
+            const notes = loadNotes();
+            notes.push({ type: 'personal', title: title, date: date, desc: desc, color: color, id: Date.now() });
+            storeNotes(notes);
+            document.getElementById('personalEventModal').style.display = 'none';
+            refreshAll();
+        };
+
+        document.querySelectorAll('.pe-swatch').forEach(b => b.addEventListener('click', () => selectNoteColor(b.dataset.color)));
+        const colorInput = document.getElementById('pe-color');
+        if (colorInput) colorInput.addEventListener('input', e => selectNoteColor(e.target.value));
+        const overlay = document.getElementById('personalEventModal');
+        if (overlay) overlay.addEventListener('click', e => { if (e.target === overlay) overlay.style.display = 'none'; });
+
+        refreshAll();
     })();
 </script>
 
