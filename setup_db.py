@@ -132,7 +132,15 @@ def setup_database():
             cursor.execute('INSERT INTO teachers (username, password_hash, is_admin) VALUES (?, ?, 1)', (admin_user, admin_pw_hash))
         else:
             cursor.execute('UPDATE teachers SET is_admin = 1 WHERE username = ?', (admin_user,))
-
+    # Notification badges: last announcement / event id each student has seen
+    try:
+        cursor.execute("ALTER TABLE students ADD COLUMN last_seen_ann INTEGER DEFAULT 0")
+        cursor.execute("UPDATE students SET last_seen_ann = (SELECT IFNULL(MAX(id), 0) FROM announcements)")
+    except: pass
+    try:
+        cursor.execute("ALTER TABLE students ADD COLUMN last_seen_ev INTEGER DEFAULT 0")
+        cursor.execute("UPDATE students SET last_seen_ev = (SELECT IFNULL(MAX(id), 0) FROM events)")
+    except: pass
     conn.commit()
     conn.close()
 

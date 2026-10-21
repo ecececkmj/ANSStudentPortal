@@ -38,7 +38,7 @@
         <!-- ADDED LOGO HERE -->
         <img src="{{ url_for('static', filename='logo.jpg') }}" alt="School Logo" style="width: 110px; height: 110px; object-fit: cover; border-radius: 50%; border: 3px solid #FFD700; margin-bottom: 15px;">
         
-        <h2>Faculty / SSLG Sign Up</h2>
+        <h2>Teacher / SSLG / MMO Sign Up</h2>
 
         {% with messages = get_flashed_messages() %}
           {% if messages %}
@@ -48,7 +48,7 @@
           {% endif %}
         {% endwith %}
 
-        <p class="hint">Only teachers and SSLG officers on the school's authorized list can sign up. Enter your full name exactly as it appears on that list, and the access code that was given to you.</p>
+        <p class="hint">Only Authorized Teacher, SSLG, and MMO officers on the school's authorized list can sign up. Enter your full name exactly as it appears on that list, and the access code that was given to you.</p>
 
         <form method="POST">
             <input type="text" name="full_name" class="auth-input" placeholder="Full Name (e.g., Juan D. Dela Cruz)" autocomplete="off" required>

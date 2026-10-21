@@ -132,7 +132,7 @@ def staff_is_allowed(staff_id):
         conn.close()
 
 # SSLG accounts can ONLY use these pages (post events / announcements). Everything else is refused.
-SSLG_ALLOWED = {'teacher_dashboard', 'add_announcement', 'add_event', 'delete_event',
+SSLG_ALLOWED = {'teacher_dashboard', 'add_announcement', 'delete_announcement', 'add_event', 'delete_event',
                 'logout', 'teacher_login', 'teacher_register', 'login', 'register'}
 
 @app.before_request
@@ -424,14 +424,16 @@ def dashboard():
     ''', (student_id,)).fetchall()
     
     announcements = conn.execute('''
-        SELECT a.*, s.subject_name 
-        FROM announcements a 
-        JOIN enrollments e ON a.subject_id = e.subject_id 
-        JOIN subjects s ON a.subject_id = s.id 
-        WHERE e.student_id = ? 
+        SELECT a.*, s.subject_name,
+               COALESCE(NULLIF(t.full_name, ''), t.username, 'School Staff') AS posted_by
+        FROM announcements a
+        LEFT JOIN subjects s ON a.subject_id = s.id
+        LEFT JOIN teachers t ON a.teacher_id = t.id
+        WHERE a.subject_id = 0 OR a.subject_id IS NULL
+           OR a.subject_id IN (SELECT subject_id FROM enrollments WHERE student_id = ?)
         ORDER BY a.id DESC
     ''', (student_id,)).fetchall()
-    
+
     events = conn.execute('''
         SELECT ev.*, IFNULL(s.subject_name, 'Campus-Wide Event') as subject_name
         FROM events ev
@@ -440,6 +442,27 @@ def dashboard():
         OR ev.subject_id IN (SELECT subject_id FROM enrollments WHERE student_id = ?)
         ORDER BY ev.event_date ASC
     ''', (student_id,)).fetchall()
+        # Group events by month for the Events page: [(month_label, [events...]), ...]
+    _groups = {}
+    for ev in events:
+        key = (ev['event_date'] or '')[:7]          # 'YYYY-MM', same value the template uses for data-month
+        _groups.setdefault(key, []).append(ev)
+    events_by_month = []
+    for key, items in _groups.items():              # events are already sorted by date
+        try:
+            label = datetime.strptime(key, '%Y-%m').strftime('%B %Y')
+        except ValueError:
+            label = 'Date to be announced'
+        events_by_month.append((label, items))
+    try:
+        seen = conn.execute('SELECT last_seen_ann, last_seen_ev FROM students WHERE id = ?', (student_id,)).fetchone()
+        last_seen_ann, last_seen_ev = (seen['last_seen_ann'] or 0), (seen['last_seen_ev'] or 0)
+    except sqlite3.OperationalError:
+        last_seen_ann = last_seen_ev = 0
+    new_ann_count = sum(1 for a in announcements if a['id'] > last_seen_ann)
+    new_ev_count = sum(1 for e in events if e['id'] > last_seen_ev)
+    max_ann_id = max([a['id'] for a in announcements], default=0)
+    max_ev_id = max([e['id'] for e in events], default=0)
     
     assignments = conn.execute('''
         SELECT a.*, s.subject_name 
@@ -477,7 +500,11 @@ def dashboard():
                            subjects=subjects, announcements=announcements, events=events, 
                            assignments=assignments, submissions=submissions, quizzes=quizzes, 
                            attempts=attempts, current_time=current_time,
-                           my_reactions=my_reactions)
+                           my_reactions=my_reactions,
+                            new_ann_count=new_ann_count, new_ev_count=new_ev_count,
+                           max_ann_id=max_ann_id, max_ev_id=max_ev_id
+                        
+
 
 @app.route('/student/enroll', methods=['POST'])
 def enroll_subject():
@@ -596,14 +623,37 @@ def teacher_dashboard():
 
     sections = conn.execute('SELECT * FROM sections WHERE teacher_id = ? ORDER BY year_level, section_name', (t_id,)).fetchall()
     subjects = conn.execute('SELECT * FROM subjects WHERE teacher_id = ?', (t_id,)).fetchall()
-    announcements = conn.execute('SELECT a.*, s.subject_name FROM announcements a JOIN subjects s ON a.subject_id = s.id WHERE a.teacher_id = ? ORDER BY a.id DESC', (t_id,)).fetchall()
+        # ALL staff (teacher, SSLG, admin) see the same announcements and events
+    announcements = conn.execute('''
+        SELECT a.*, s.subject_name,
+               COALESCE(NULLIF(t.full_name, ''), t.username, 'Unknown') AS posted_by
+        FROM announcements a
+        LEFT JOIN subjects s ON a.subject_id = s.id
+        LEFT JOIN teachers t ON a.teacher_id = t.id
+        ORDER BY a.id DESC
+    ''').fetchall()
     events = conn.execute('''
-        SELECT ev.*, IFNULL(s.subject_name, 'School-Wide Event') as subject_name 
-        FROM events ev 
-        LEFT JOIN subjects s ON ev.subject_id = s.id 
-        WHERE ev.teacher_id = ? 
+        SELECT ev.*, IFNULL(s.subject_name, 'School-Wide') AS subject_name,
+               COALESCE(NULLIF(t.full_name, ''), t.username, 'Unknown') AS posted_by
+        FROM events ev
+        LEFT JOIN subjects s ON ev.subject_id = s.id
+        LEFT JOIN teachers t ON ev.teacher_id = t.id
         ORDER BY ev.event_date ASC
-    ''', (t_id,)).fetchall()
+    ''').fetchall()
+    me = conn.execute('SELECT is_admin FROM teachers WHERE id = ?', (t_id,)).fetchone()
+    is_admin = bool(me and me['is_admin'] == 1)
+
+    # WHO answered each event: {event_id: {'going': [...], 'interested': [...], 'not_going': [...]}}
+    responses = {}
+    for r in conn.execute('''
+        SELECT er.event_id, er.action, st.full_name, st.lrn
+        FROM event_reactions er
+        JOIN events ev ON ev.id = er.event_id
+        JOIN students st ON st.id = er.student_id
+        ORDER BY st.full_name
+    ''').fetchall():
+        bucket = responses.setdefault(r['event_id'], {'going': [], 'interested': [], 'not_going': []})
+        bucket.setdefault(r['action'], []).append({'name': r['full_name'], 'lrn': None if role == 'sslg' else r['lrn']})
     # WHO answered each of this teacher's events: {event_id: {'going': [...], 'interested': [...], 'not_going': [...]}}
     responses = {}
     for r in conn.execute('''
@@ -623,11 +673,11 @@ def teacher_dashboard():
     conn.close()
     
     # Notice we added students=all_students to the template renderer!
-    return render_template('teacher_dashboard.html', username=session['t_username'], role=role, 
-                           signup_stats=signup_stats, students=all_students, sections=sections, 
-                           subjects=subjects, announcements=announcements, events=events, 
+    return render_template('teacher_dashboard.html', username=session['t_username'], role=role,
+                           signup_stats=signup_stats, students=all_students, sections=sections,
+                           subjects=subjects, announcements=announcements, events=events,
                            assignments=assignments, quizzes=quizzes,
-                           responses=responses)
+                           responses=responses, me_id=t_id, is_admin=is_admin)
 
 @app.route('/assign_section', methods=['POST'])
 def assign_section():
@@ -685,6 +735,25 @@ def add_announcement():
     conn.commit()
     conn.close()
     flash('Announcement posted!')
+    return redirect(url_for('teacher_dashboard'))
+def is_admin_user(conn):
+    row = conn.execute('SELECT is_admin FROM teachers WHERE id = ?', (session['teacher_id'],)).fetchone()
+    return bool(row and row['is_admin'] == 1)
+
+@app.route('/teacher/announcement/delete/<int:ann_id>', methods=['POST'])
+def delete_announcement(ann_id):
+    if 'teacher_id' not in session: return redirect(url_for('teacher_login'))
+    conn = get_db_connection()
+    ann = conn.execute('SELECT teacher_id FROM announcements WHERE id = ?', (ann_id,)).fetchone()
+    if not ann:
+        flash('Announcement not found.')
+    elif ann['teacher_id'] == session['teacher_id'] or is_admin_user(conn):
+        conn.execute('DELETE FROM announcements WHERE id = ?', (ann_id,))
+        conn.commit()
+        flash('Announcement deleted.')
+    else:
+        flash('You can only delete your own announcements.')
+    conn.close()
     return redirect(url_for('teacher_dashboard'))
 
 @app.route('/teacher/event/add', methods=['POST'])
@@ -1263,7 +1332,22 @@ def admin_delete_user(role, user_id):
     conn.close()
     flash(f'{role.capitalize()} account deleted successfully.')
     return redirect(url_for('admin_dashboard'))
-
+@app.route('/mark_seen', methods=['POST'])
+def mark_seen():
+    if 'student_id' not in session: return jsonify({'status': 'error'}), 401
+    data = request.get_json(silent=True) or {}
+    col = {'announcements': 'last_seen_ann', 'events': 'last_seen_ev'}.get(data.get('kind'))
+    try:
+        upto = int(data.get('upto', 0))
+    except (TypeError, ValueError):
+        return jsonify({'status': 'error'}), 400
+    if not col:
+        return jsonify({'status': 'error'}), 400
+    conn = get_db_connection()
+    conn.execute(f'UPDATE students SET {col} = MAX(IFNULL({col}, 0), ?) WHERE id = ?', (upto, session['student_id']))
+    conn.commit()
+    conn.close()
+    return jsonify({'status': 'success'})
 # --- NEW EVENT FEATURES ---
 @app.route('/event/react', methods=['POST'])
 def react_event():
@@ -1322,15 +1406,18 @@ def react_event():
 @app.route('/teacher/event/delete/<int:event_id>', methods=['POST'])
 def delete_event(event_id):
     if 'teacher_id' not in session: return redirect(url_for('teacher_login'))
-    
     conn = get_db_connection()
-    # Allows the teacher who posted it (whether school-wide or class-specific) to delete it
-    conn.execute('DELETE FROM event_reactions WHERE event_id IN (SELECT id FROM events WHERE id = ? AND teacher_id = ?)', (event_id, session['teacher_id']))
-    conn.execute('DELETE FROM events WHERE id = ? AND teacher_id = ?', (event_id, session['teacher_id']))
-    conn.commit()
+    ev = conn.execute('SELECT teacher_id FROM events WHERE id = ?', (event_id,)).fetchone()
+    if not ev:
+        flash('Event not found.')
+    elif ev['teacher_id'] == session['teacher_id'] or is_admin_user(conn):
+        conn.execute('DELETE FROM event_reactions WHERE event_id = ?', (event_id,))
+        conn.execute('DELETE FROM events WHERE id = ?', (event_id,))
+        conn.commit()
+        flash('Event deleted successfully.')
+    else:
+        flash('You can only delete your own events.')
     conn.close()
-    
-    flash('Event deleted successfully.')
     return redirect(url_for('teacher_dashboard'))
 
 if __name__ == '__main__':

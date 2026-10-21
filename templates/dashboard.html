@@ -517,6 +517,7 @@
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
             </span>
             Announcements
+            {% if new_ann_count %}<span class="new-badge" id="nav-badge-announcements">{{ new_ann_count }}</span>{% endif %}
         </a>
         
         <a id="nav-events" class="side-link" onclick="switchViewAndRemember('events')">
@@ -524,6 +525,7 @@
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
             </span>
             Events
+            {% if new_ev_count %}<span class="new-badge" id="nav-badge-events">{{ new_ev_count }}</span>{% endif %}
         </a>
 
         <!-- Log Out at Bottom -->
@@ -653,19 +655,25 @@
                 </div>
 
                 <!-- 2. ANNOUNCEMENT WIDGET -->
-                <div class="dashboard-widget" onclick="switchViewAndRemember('announcements')">
-                    <h3>Announcement</h3>
+                                <div class="dashboard-widget" onclick="switchViewAndRemember('announcements')">
+                    <h3>Announcement {% if new_ann_count %}<span class="new-badge" id="widget-badge-announcements">{{ new_ann_count }} new</span>{% endif %}</h3>
+                    {% for ann in announcements[:2] %}
                     <div class="widget-feed-item">
-                        <span class="widget-feed-date">Latest Update</span>
-                        <div class="widget-feed-text">Abellana National School News & Notices. Tap below to view all current semester bulletins...</div>
+                        <span class="widget-feed-date">{{ (ann.date_posted or '')[:10] }}</span>
+                        <div class="widget-feed-text">{{ ann.title }}</div>
                     </div>
+                    {% else %}
+                    <div class="widget-feed-item">
+                        <div class="widget-feed-text">No announcements yet.</div>
+                    </div>
+                    {% endfor %}
                     <a href="#" onclick="switchViewAndRemember('announcements')" class="widget-link">Read Full Bulletin &rarr;</a>
                 </div>
 
 
                 <!-- 4. EVENTS WIDGET -->
                 <div class="dashboard-widget" onclick="switchViewAndRemember('events')">
-                    <h3>Events</h3>
+                    <h3>Events {% if new_ev_count %}<span class="new-badge" id="widget-badge-events">{{ new_ev_count }} new</span>{% endif %}</h3>
                     {% for ev in events[:2] %}
                     <div class="widget-feed-item">
                         <span class="widget-feed-date">{{ (ev.event_date or '')[:10] }}</span>
@@ -1141,7 +1149,7 @@
                                 <span style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.875rem; font-weight: bold; text-transform: none; letter-spacing: 0; box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4);">📚 {{ ann.subject_name }}</span>
                             {% endif %}
                             
-                            <span style="color: #888; font-size: 0.875rem; font-weight: 500;">📅 Posted: {{ ann.date_posted[:10] }}</span>
+                            <span style="color: #888; font-size: 0.875rem; font-weight: 500;">Posted: {{ ann.date_posted[:10] }} · by {{ ann.posted_by }}</span>
                         </div>
                         
                         <!-- Title -->
@@ -1471,34 +1479,35 @@
     </script>
     
     <script>
-        function switchViewAndRemember(viewName) {
-            // Save state to browser storage so it survives refreshes
-            localStorage.setItem('activeStudentView', viewName);
-            
-            // Hide all views
-            document.querySelectorAll('.view-section').forEach(section => {
-                section.style.display = 'none';
-            });
-            
-            // Show target view
-            const target = document.getElementById('view-' + viewName);
-            if (target) {
-                target.style.display = 'block';
-            }
-            
-            // Highlight sidebar link
-            document.querySelectorAll('.side-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            const activeLink = document.getElementById('nav-' + viewName);
-            if (activeLink) {
-                activeLink.classList.add('active');
-            } else {
-                document.getElementById('nav-home')?.classList.add('active');
-            }
-            
-            window.scrollTo(0, 0);
+                const SEEN_UPTO = { announcements: {{ max_ann_id }}, events: {{ max_ev_id }} };
+
+        function markSeen(kind) {
+            if (!(kind in SEEN_UPTO)) return;
+            ['nav-badge-', 'widget-badge-'].forEach(p => document.getElementById(p + kind)?.remove());
+            fetch('/mark_seen', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ kind: kind, upto: SEEN_UPTO[kind] })
+            }).catch(() => {});
         }
+
+        function switchViewAndRemember(viewName) {
+            localStorage.setItem('activeStudentView', viewName);
+            document.querySelectorAll('.view-section').forEach(section => { section.style.display = 'none'; });
+            const target = document.getElementById('view-' + viewName);
+            if (target) target.style.display = 'block';
+            document.querySelectorAll('.side-link').forEach(link => { link.classList.remove('active'); });
+            const activeLink = document.getElementById('nav-' + viewName);
+            if (activeLink) { activeLink.classList.add('active'); }
+            else { document.getElementById('nav-home')?.classList.add('active'); }
+            window.scrollTo(0, 0);
+            markSeen(viewName);     // opening Announcements or Events clears its badge
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const savedView = localStorage.getItem('activeStudentView');
+            if (savedView) { switchViewAndRemember(savedView); }
+        });
 
         // Automatically restore user's exact view and highlight on reload
         document.addEventListener("DOMContentLoaded", function() {
@@ -1671,6 +1680,9 @@
             document.querySelectorAll('.permanent-sidebar .side-link, .permanent-sidebar > div[onclick]').forEach(el => el.addEventListener('click', () => setOpen(false)));
         })();
     </script>
+    .new-badge { background: #e74c3c; color: #fff; font-size: 0.7rem; font-weight: bold; padding: 2px 8px; border-radius: 12px; margin-left: 6px; vertical-align: middle; }
+.side-link { position: relative; }
+.side-link .new-badge { position: absolute; top: 2px; right: 6px; margin: 0; padding: 1px 6px; }
     <style>
         /* Scrollable month-by-month event list */
         .events-scroll { margin-top: 20px; max-height: 75vh; overflow-y: auto; padding-right: 8px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }

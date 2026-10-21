@@ -966,6 +966,31 @@
                     <textarea name="content" class="lms-input" rows="5" placeholder="Write your message here..." required></textarea>
                     <button type="submit" class="btn-gold">Broadcast to Students</button>
                 </form>
+                                <div class="sub-header-box">
+                    <h3>Posted Announcements</h3>
+                </div>
+                <div class="table-responsive ev-table-box">
+                    <table>
+                        <tr><th>Title &amp; Message</th><th>Date</th><th>Posted by</th><th>Audience</th><th>Action</th></tr>
+                        {% for ann in announcements %}
+                        <tr>
+                            <td><strong>{{ ann.title }}</strong><br><span style="color: #ccc; font-size: 0.9rem; white-space: pre-wrap;">{{ ann.content }}</span></td>
+                            <td style="color: #FFD700;">{{ (ann.date_posted or '')[:10] }}</td>
+                            <td>{{ ann.posted_by }}</td>
+                            <td>{{ ann.subject_name or 'School-Wide' }}</td>
+                            <td>
+                                {% if ann.teacher_id == me_id or is_admin %}
+                                <form method="POST" action="{{ url_for('delete_announcement', ann_id=ann.id) }}" style="display: inline-block; margin: 0;">
+                                    <button type="submit" style="background: #e74c3c; color: white; padding: 6px 12px; font-size: 0.8rem; border: none; cursor: pointer; border-radius: 4px;" onclick="return confirm('Delete this announcement permanently?');">Delete</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="5">No announcements have been posted yet.</td></tr>
+                        {% endfor %}
+                    </table>
+                </div>
             </div>
         </div>
     </section>
@@ -996,6 +1021,21 @@
                             <label class="ev-label">Description / Details</label>
                             <textarea name="description" class="lms-input" rows="2" placeholder="Event details..." required style="resize: vertical;"></textarea>
                         </div>
+                        <div>
+                            <label class="ev-label">Category</label>
+                            <input type="text" name="category" class="lms-input" list="evCategories" value="General Events" placeholder="e.g., General Events">
+                            <datalist id="evCategories">
+                                <option value="General Events"><option value="Holiday"><option value="Seminar"><option value="Sports"><option value="Academic">
+                            </datalist>
+                        </div>
+                        <div>
+                            <label class="ev-label">Event Banner Image (optional)</label>
+                            <input type="file" name="image" accept="image/png,image/jpeg,image/gif,image/webp" class="lms-input">
+                        </div>
+                        <div class="ev-full">
+                            <label class="ev-label">Registration Form Link (optional)</label>
+                            <input type="url" name="form_link" class="lms-input" placeholder="https://forms.gle/...">
+                        </div>
 
                         <!-- Events are always shown to everyone (school-wide) -->
                         <input type="hidden" name="is_school_wide" value="on">
@@ -1011,12 +1051,12 @@
                 </div>
                 <div class="table-responsive ev-table-box">
                     <table>
-                        <tr><th>Title</th><th>Date</th><th>Responses</th><th>Action</th></tr>
+                        <tr><th>Title</th><th>Date</th><th>Posted by</th><th>Responses</th><th>Action</th></tr>
                         {% for ev in events %}
                         <tr>
                             <td><strong>{{ ev.title }}</strong><br><span style="color: #aaa; font-size: 0.85rem;">{{ ev.subject_name }}</span></td>
                             <td style="color: #FFD700;">{{ ev.event_date }}</td>
-                            <td>
+                            <td>{{ ev.posted_by }}</td>
                                 {% set r = responses.get(ev.id) %}
                                 {% if r and (r.going or r.interested or r.not_going) %}
                                 <details>
@@ -1037,15 +1077,15 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <form method="POST" action="{{ url_for('delete_event', event_id=ev.id) }}" style="display: inline-block; margin: 0;">
-                                    <button type="submit" style="background: #e74c3c; color: white; padding: 6px 12px; font-size: 0.8rem; border: none; cursor: pointer; border-radius: 4px;" onclick="return confirm('Are you sure you want to permanently delete this event?');">
-                                        Delete
-                                    </button>
+                                {% if ev.teacher_id == me_id or is_admin %}
+                                 <form method="POST" action="{{ url_for('delete_event', event_id=ev.id) }}" style="display: inline-block; margin: 0;">
+                                        <button type="submit" style="background: #e74c3c; color: white; padding: 6px 12px; font-size: 0.8rem; border: none; cursor: pointer; border-radius: 4px;" onclick="return confirm('Are you sure you want to permanently delete this event?');">Delete</button>
                                 </form>
+                                {% endif %}
                             </td>
                         </tr>
                         {% else %}
-                        <tr><td colspan="4">You haven't scheduled any events yet.</td></tr>
+                        <tr><td colspan="5">No events have been scheduled yet.</td></tr>
                         {% endfor %}
                     </table>
                 </div>
