@@ -49,7 +49,7 @@
         .feed-header { display: flex; align-items: flex-start; margin-bottom: 15px; gap: 15px;}
         .feed-icon { background: #FFD700; color: #800000; min-width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.2rem;}
         .feed-title { color: #fff; font-size: 1.1rem; margin: 0; font-weight: bold; word-break: break-word;}
-        .feed-date { color: #aaa; font-size: 0.85rem; margin-top: 3px;}
+        .feed-date { color: #aaa; font-size: 0.875rem; margin-top: 3px;}
         .feed-content { color: #e0e0e0; line-height: 1.6; margin-bottom: 15px; word-break: break-word;}
         
         .turn-in-area { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 6px; border: 1px dashed rgba(255,215,0,0.4); margin-top: 15px; width: 100%; overflow: hidden;}
@@ -73,8 +73,8 @@
             color: #FFD700;
             margin: 0 0 8px 0;
             font-size: clamp(1.5rem, 4vw, 2rem);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            text-transform: none;
+            letter-spacing: 0;
             border: none !important;
             padding-bottom: 0 !important;
             display: flex;
@@ -134,7 +134,7 @@
         .dot-container::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.5); border-radius: 4px; }
 
         .event-dot { 
-            font-size: 0.7rem; 
+            font-size: 0.8rem; 
             padding: 3px 6px; 
             border-radius: 4px; 
             color: white; 
@@ -153,7 +153,7 @@
         @media (max-width: 768px) {
             .cal-cell { min-height: 60px; padding: 4px; }
             .cal-date { font-size: 0.9rem; margin-bottom: 4px; }
-            .event-dot { padding: 2px; font-size: 0.6rem; }
+            .event-dot { padding: 2px; font-size: 0.8rem; }
         }
 
         /* Fixes the giant calendar navigation buttons */
@@ -219,7 +219,7 @@
                 flex-direction: column !important;
                 justify-content: center !important;
                 align-items: center !important;
-                font-size: 0.65rem !important; 
+                font-size: 0.8rem !important; 
                 color: #ccc !important;
                 border: none !important;
                 background: transparent !important;
@@ -239,7 +239,7 @@
                 font-size: 0.9rem !important;
             }
             .permanent-sidebar > div[onclick] > div:last-child {
-                font-size: 0.65rem !important;
+                font-size: 0.8rem !important;
                 margin-bottom: 0 !important;
             }
             
@@ -291,8 +291,8 @@
             flex-direction: column;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
-        .dashboard-widget h3 { color: #FFD700; text-transform: uppercase; font-size: 1.1rem; margin-top: 0; margin-bottom: 20px; letter-spacing: 1px; }
-        .widget-link { margin-top: auto; padding-top: 15px; color: #FFD700; text-decoration: none; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; display: inline-block; transition: 0.2s;}
+        .dashboard-widget h3 { color: #FFD700; text-transform: none; font-size: 1.1rem; margin-top: 0; margin-bottom: 20px; letter-spacing: 0; }
+        .widget-link { margin-top: auto; padding-top: 15px; color: #FFD700; text-decoration: none; font-size: 0.875rem; font-weight: bold; text-transform: none; display: inline-block; transition: 0.2s;}
         .widget-link:hover { color: white; }
 
         /* Mini Calendar */
@@ -305,7 +305,7 @@
         /* Feed Items (Announcements & Events) */
         .widget-feed-item { margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
         .widget-feed-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .widget-feed-date { color: #FFD700; font-size: 0.85rem; font-weight: bold; margin-bottom: 4px; display: block; }
+        .widget-feed-date { color: #FFD700; font-size: 0.875rem; font-weight: bold; margin-bottom: 4px; display: block; }
         .widget-feed-text { color: #ccc; font-size: 0.95rem; line-height: 1.4; }
 
         /* 📱 WIDGET MOBILE OVERRIDE */
@@ -314,13 +314,16 @@
                 grid-template-columns: 1fr !important; /* Forces widgets to stack vertically on phones */
             }
         }
-        /* --- VIOLET PERSONAL EVENT STYLES --- */
-        .event-personal { background: rgba(155, 89, 182, 0.8) !important; border-left: 2px solid #d291bc !important; color: white !important; }
-        .agenda-personal { background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border-left: 5px solid #FFD700; margin-bottom: 15px; position: relative; border-top: 1px solid rgba(155, 89, 182, 0.2); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        /* --- PERSONAL NOTE STYLES (color is chosen by the student) --- */
+        .event-personal { background: #e67e22; border-left: 2px solid rgba(255,255,255,0.6); color: white; }
+        .agenda-personal { background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border-left: 5px solid #FFD700; margin-bottom: 15px; position: relative; border-top: 1px solid rgba(255, 215, 0, 0.15); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         
+        .pe-swatch { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; transition: 0.15s; }
+        .pe-swatch:hover { transform: scale(1.15); }
+        .pe-swatch.selected { border-color: #fff; box-shadow: 0 0 0 2px #FFD700; }
         /* Glassmorphism Popup Modal */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 10000; display: none; align-items: center; justify-content: center; }
-        .modal-box { background: linear-gradient(135deg, rgba(30,6,10,0.95), rgba(20,2,5,0.98)); border: 1px solid rgba(155, 89, 182, 0.4); border-top: 4px solid #FFD700; border-radius: 12px; padding: 30px; width: 90%; max-width: 400px; box-shadow: 0 15px 40px rgba(155, 89, 182, 0.3); }
+        .modal-box { background: linear-gradient(135deg, rgba(30,6,10,0.95), rgba(20,2,5,0.98)); border: 1px solid rgba(255, 215, 0, 0.3); border-top: 4px solid #FFD700; border-radius: 12px; padding: 30px; width: 90%; max-width: 400px; box-shadow: 0 15px 40px rgba(255, 215, 0, 0.15); }
         /* --- MOBILE CALENDAR FIX (PERFECT FIT) --- */
         @media (max-width: 768px) {
             .calendar-scroll-area {
@@ -333,7 +336,7 @@
             }
             .cal-days-row {
                 gap: 3px !important;
-                font-size: 0.75rem !important; /* Shrinks the day headers (Sun, Mon...) */
+                font-size: 0.875rem !important; /* Shrinks the day headers (Sun, Mon...) */
                 padding-bottom: 5px !important;
             }
             .cal-grid {
@@ -345,11 +348,11 @@
                 border-radius: 4px !important;
             }
             .cal-date {
-                font-size: 0.8rem !important;
+                font-size: 0.875rem !important;
                 margin-bottom: 3px !important;
             }
             .event-dot {
-                font-size: 0.6rem !important; 
+                font-size: 0.8rem !important; 
                 padding: 2px 4px !important;
                 max-width: 100% !important; /* Enforces the cut-off boundary on mobile */
                 box-sizing: border-box !important;
@@ -421,23 +424,56 @@
             body .main-content-wrapper { padding-top: 64px !important; padding-bottom: 20px !important; }
         }
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Compact calendar on desktop: the whole month fits on screen, no scrolling */
+        /* --- READABILITY: Inter font, comfortable sizes --- */
+        html { font-size: 16px; }
+        body, button, input, select, textarea { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; }
+        body { font-size: 1rem; line-height: 1.5; color: #f3eaea; -webkit-font-smoothing: antialiased; }
+        p, .feed-content, .widget-feed-text { line-height: 1.6; }
+    </style>
+    <style>
+        /* ===== COMPACT CALENDAR (desktop): fits on one screen, no scrolling ===== */
         @media (min-width: 769px) {
-            #view-calendar .content-wrapper { padding-top: 12px !important; padding-bottom: 12px !important; }
-            #view-calendar .page-header-box { padding: 14px 24px; margin-bottom: 0; }
-            #view-calendar .page-header-box h2 { margin-bottom: 4px; font-size: 1.5rem; }
+            #view-calendar .content-wrapper { padding: 10px 20px !important; }
+            #view-calendar .page-header-box { padding: 12px 20px; margin-bottom: 12px; }
+            #view-calendar .page-header-box h2 { font-size: 1.35rem; margin-bottom: 4px; }
+            #view-calendar .page-header-box h2 svg { width: 22px; height: 22px; }
             #view-calendar .page-header-box p { font-size: 0.9rem; }
-            #view-calendar .workspace-layout { margin-top: 12px !important; gap: 20px !important; grid-template-columns: 1fr 340px !important; }
+            #view-calendar .workspace-layout { margin-top: 0 !important; gap: 16px !important; grid-template-columns: 1fr 320px !important; }
             #view-calendar .workspace-layout > div:first-child { padding: 14px 18px !important; }
             #view-calendar .workspace-layout > div:first-child > div:first-child { margin-bottom: 8px !important; padding-bottom: 8px !important; }
+            #calendar-month-year { font-size: 1.15rem !important; }
             #view-calendar .cal-days-row { margin-bottom: 6px; padding-bottom: 6px; font-size: 0.85rem; }
-            #view-calendar .cal-grid { gap: 5px; }
-            #view-calendar .cal-cell { height: clamp(50px, calc((100vh - 300px) / 6 - 5px), 92px); padding: 4px 6px; }
+            #view-calendar .cal-grid { gap: 4px; }
+            #view-calendar .cal-cell { height: clamp(44px, calc((100vh - 330px) / 6), 78px); padding: 4px 6px; }
             #view-calendar .cal-date { font-size: 0.85rem; margin-bottom: 2px; }
-            #view-calendar .cal-cell.today .cal-date { font-size: 0.95rem; }
-            #view-calendar .event-dot { font-size: 0.65rem; padding: 2px 5px; }
+            #view-calendar .cal-cell.today .cal-date { font-size: 0.9rem; }
+            #view-calendar .event-dot { font-size: 0.7rem; padding: 2px 5px; }
+            #view-calendar .workspace-layout > div:last-child { gap: 12px !important; }
+            #view-calendar .workspace-layout > div:last-child > div { padding: 14px 18px !important; }
+            #view-calendar #master-agenda-list { max-height: calc(100vh - 330px) !important; margin-top: 12px !important; gap: 10px !important; }
         }
+    </style>
+    <style>
+        /* ===== Match the teacher dashboard home layout ===== */
+        @media (min-width: 769px) {
+            #view-home { padding-top: 0 !important; }
+            #view-home .home-container {
+                padding-top: 110px !important;
+                align-content: normal !important;
+                align-items: center !important;
+                gap: 40px !important;
+            }
+            #view-home #mobile-search-reorder { margin-bottom: 35px !important; }
+            .cards-grid-new { grid-template-columns: repeat(2, 1fr) !important; gap: 20px !important; }
+        }
+        .dashboard-widget { background: rgba(59, 13, 19, 0.92) !important; box-shadow: 0 6px 16px rgba(0,0,0,0.3) !important; }
+        .dashboard-widget:hover { background-color: rgba(74, 17, 24, 0.98) !important; }
+        /* odd number of home cards: let the last one fill the row */
+        .cards-grid-new > .dashboard-widget:last-child:nth-child(odd) { grid-column: 1 / -1; }
     </style>
 </head>
 <body class="home-background" style="background: url('{{ url_for('static', filename='bg.jpg') }}') no-repeat center center fixed; background-size: cover; background-color: #000; margin: 0; min-height: 100vh;">
@@ -458,7 +494,7 @@
                 <!-- Default initial if no image is uploaded -->
                 <div style="width: 45px; height: 45px; background: #3498db; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; margin-bottom: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">{{ full_name[0] }}</div>
             {% endif %}
-            <div style="color: #FFD700; font-size: 0.75rem; margin-bottom: 20px; font-weight: bold;">My Profile</div>
+            <div style="color: #FFD700; font-size: 0.875rem; margin-bottom: 20px; font-weight: bold;">My Profile</div>
         </div>
 
         <!-- Navigation Links -->
@@ -579,7 +615,7 @@
                 <h1 class="portal-main-title" style="margin-bottom: 5px; font-size: 2rem;">Welcome Back,</h1>
                 <h1 class="portal-main-title" style="color: #ffffff; font-size: clamp(1.5rem, 4vw, 2.2rem);">{{ full_name }}</h1>
                 
-                <div class="portal-sub-title" style="margin-top: 10px; color: #ccc; display: flex; align-items: center; text-transform: uppercase;">
+                <div class="portal-sub-title" style="margin-top: 10px; color: #ccc; display: flex; align-items: center; text-transform: none;">
                     Student Dashboard
                     
                     <!-- Added tabindex="0" so it reacts to mobile taps instantly -->
@@ -588,9 +624,9 @@
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
                         </svg>
                         
-                        <div class="info-tooltip-text" style="position: absolute; top: 150%; left: 0; width: 280px; background: rgba(20, 2, 5, 0.98); color: white; padding: 15px; border-radius: 8px; border-top: 4px solid #FFD700; box-shadow: 0 8px 24px rgba(0,0,0,0.7); font-size: 0.85rem; line-height: 1.5; visibility: hidden; opacity: 0; transform: translateY(10px); transition: 0.3s ease; z-index: 100; text-transform: none; letter-spacing: normal; text-align: left;">
+                        <div class="info-tooltip-text" style="position: absolute; top: 150%; left: 0; width: 280px; background: rgba(20, 2, 5, 0.98); color: white; padding: 15px; border-radius: 8px; border-top: 4px solid #FFD700; box-shadow: 0 8px 24px rgba(0,0,0,0.7); font-size: 0.875rem; line-height: 1.5; visibility: hidden; opacity: 0; transform: translateY(10px); transition: 0.3s ease; z-index: 100; text-transform: none; letter-spacing: normal; text-align: left;">
                             <strong style="color: #FFD700; display: block; margin-bottom: 6px; font-size: 0.95rem;">What is this portal for?</strong>
-                            This is your official digital hub. Use this platform to receive school <strong>announcements</strong> and keep track of upcoming school <strong>events</strong>.
+                            This is your official school hub for <strong>announcements</strong> and <strong>events</strong>. Use it to read the latest school updates and check the calendar for upcoming campus events.
                         </div>
                     </div>
                 </div>
@@ -613,7 +649,7 @@
                     <div class="mini-calendar-grid" id="dynamicMiniCalendar" style="margin-bottom: 10px;">
                         <!-- JavaScript will auto-generate the current month's dates here -->
                     </div>
-                    <a href="#" onclick="switchViewAndRemember('calendar')" class="widget-link">VIEW FULL CALENDAR &rarr;</a>
+                    <a href="#" onclick="switchViewAndRemember('calendar')" class="widget-link">View Full Calendar &rarr;</a>
                 </div>
 
                 <!-- 2. ANNOUNCEMENT WIDGET -->
@@ -621,64 +657,26 @@
                     <h3>Announcement</h3>
                     <div class="widget-feed-item">
                         <span class="widget-feed-date">Latest Update</span>
-                        {% if announcements %}
-                        <div class="widget-feed-text"><strong>{{ announcements[0].title }}</strong><br>{{ announcements[0].content[:90] }}{% if announcements[0].content|length > 90 %}...{% endif %}</div>
-                        {% else %}
-                        <div class="widget-feed-text">No announcements yet. Check back soon!</div>
-                        {% endif %}
+                        <div class="widget-feed-text">Abellana National School News & Notices. Tap below to view all current semester bulletins...</div>
                     </div>
-                    <a href="#" onclick="switchViewAndRemember('announcements')" class="widget-link">READ FULL BULLETIN &rarr;</a>
+                    <a href="#" onclick="switchViewAndRemember('announcements')" class="widget-link">Read Full Bulletin &rarr;</a>
                 </div>
 
-
-                <div class="dashboard-widget" onclick="switchViewAndRemember('gallery')">
-                    <h3>School Gallery</h3>
-                    
-                    <!-- Slideshow Container -->
-                    <div style="position: relative; width: 100%; height: 120px; border-radius: 6px; margin-bottom: 10px; border: 1px solid rgba(255,215,0,0.3); overflow: hidden; background: #111;" id="gallerySlideshow">
-                        
-                        {% set gallery_ns = namespace(has_images=false) %}
-                        {% for ev in events %}
-                            {% if ev.image_path %}
-                                {% set gallery_ns.has_images = true %}
-                                <div class="gallery-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; background: url('{{ url_for('static', filename='uploads/' + ev.image_path) }}') center/cover;">
-                                    
-                                    <!-- Event Title Caption Overlay -->
-                                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.75); color: #FFD700; padding: 6px 10px; font-size: 0.75rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-top: 1px solid rgba(255,215,0,0.2);">
-                                        {{ ev.title }}
-                                    </div>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                        
-                        {% if not gallery_ns.has_images %}
-                            <!-- Fallback if teachers haven't uploaded any pictures yet -->
-                            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #888; font-size: 0.85rem; text-align: center; font-style: italic; background: rgba(0,0,0,0.5);">
-                                No event photos uploaded yet.
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="widget-feed-text" style="font-style: italic; font-size: 0.85rem; height: 18px;">
-                        {% if gallery_ns.has_images %}Highlights from past events{% else %}Check back later!{% endif %}
-                    </div>
-                    
-                    <!-- Directs students to the Events tab where they can see the full descriptions -->
-                    <a href="#" onclick="switchViewAndRemember('gallery')" class="widget-link">EXPLORE GALLERY &rarr;</a>
-                </div>
 
                 <!-- 4. EVENTS WIDGET -->
                 <div class="dashboard-widget" onclick="switchViewAndRemember('events')">
                     <h3>Events</h3>
+                    {% for ev in events[:2] %}
                     <div class="widget-feed-item">
-                        <span class="widget-feed-date">Wed, Jun 16</span>
-                        <div class="widget-feed-text">Intramurals Kickoff</div>
+                        <span class="widget-feed-date">{{ (ev.event_date or '')[:10] }}</span>
+                        <div class="widget-feed-text">{{ ev.title }}</div>
                     </div>
+                    {% else %}
                     <div class="widget-feed-item">
-                        <span class="widget-feed-date">Dec 11</span>
-                        <div class="widget-feed-text">Annual Science & Tech Fair</div>
+                        <div class="widget-feed-text">No upcoming events.</div>
                     </div>
-                    <a href="#" onclick="switchViewAndRemember('events')" class="widget-link">EXPLORE EVENTS &rarr;</a>
+                    {% endfor %}
+                    <a href="#" onclick="switchViewAndRemember('events')" class="widget-link">Explore Events &rarr;</a>
                 </div>
 
             </section>
@@ -736,22 +734,29 @@
         <div class="content-wrapper">
             <div class="page-header-box">
                 <h2>Campus Events</h2>
-                <p>Upcoming school-wide and class events.</p>
+                <p>Explore upcoming school-wide activities.</p>
             </div>
             
             <!-- Category Tabs -->
             <div style="display: flex; gap: 10px; margin-top: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
-                <button id="tab-school" onclick="toggleEventTabs('school')" style="background: #FFD700; color: #800000; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s;">All Events</button>
+                <button id="tab-school" onclick="toggleEventTabs('school')" style="background: #FFD700; color: #800000; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s;">School Events</button>
             </div>
 
             <!-- TAB 1: SCHOOL EVENTS (Holidays, Seminars, Gatherings) -->
-            <div id="events-school" class="responsive-grid" style="margin-top: 20px; display: grid;">
-                {% set has_school_events = namespace(found=false) %}
-                {% for ev in events %}
-                    {% set has_school_events.found = true %}
+            <div id="events-school" class="events-scroll">
+                {% if not events_by_month %}
+                <div style="color: #aaa; text-align: center; padding: 40px; background: rgba(0,0,0,0.3); border-radius: 8px;">
+                    No campus events scheduled right now.
+                </div>
+                {% endif %}
+
+                {% for month_label, month_events in events_by_month %}
+                <div class="month-block" data-month="{{ month_events[0].event_date[:7] if month_events[0].event_date else '' }}">
+                    <div class="month-heading">{{ month_label }}</div>
+                    <div class="responsive-grid" style="display: grid;">
+                    {% for ev in month_events %}
                     <div class="feed-item" style="margin-bottom: 0; display: flex; flex-direction: column;">
-                        
-                        <!-- Dynamic Event Image -->
+
                         {% if ev.image_path %}
                         <div style="width: 100%; height: 180px; background: url('{{ url_for('static', filename='uploads/' + ev.image_path) }}') center/cover; border-radius: 6px; margin-bottom: 15px; border: 1px solid rgba(255,215,0,0.2);"></div>
                         {% else %}
@@ -759,36 +764,40 @@
                             No Event Banner Provided
                         </div>
                         {% endif %}
-                        
+
                         <strong style="color: #3498db; font-size: 0.9rem;">{{ ev.subject_name }}</strong>
                         <h3 style="color: white; margin: 5px 0;">{{ ev.title }}</h3>
-                        <div style="color: #FFD700; font-weight: bold; margin-bottom: 10px;">Date: {{ ev.event_date }}</div>
-                        
-                        <!-- Dynamic Description & Form Link -->
+                        <div style="color: #FFD700; font-weight: bold; margin-bottom: 10px;">Date: {{ (ev.event_date or '').replace('T', ' · ') }}</div>
+
                         <p style="color: #ccc; font-size: 0.95rem; line-height: 1.5; flex-grow: 1;">
                             {{ ev.description }}
                             {% if ev.form_link %}
                             <br><br>
-                            <a href="{{ ev.form_link }}" target="_blank" style="display: inline-block; background: #3498db; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.85rem;">Open Registration Form &rarr;</a>
+                            <a href="{{ ev.form_link }}" target="_blank" style="display: inline-block; background: #3498db; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.875rem;">Open Registration Form &rarr;</a>
                             {% endif %}
                         </p>
-                        
-                        <!-- Dynamic Reactions Bar (click a button again to undo) -->
+
                         {% set mine = my_reactions.get(ev.id) %}
                         <div class="react-bar">
                             <button type="button" id="btn-interested-{{ ev.id }}" class="react-btn{% if mine == 'interested' %} active{% endif %}" onclick="reactToEvent({{ ev.id }}, 'interested')">Interested ({{ ev.interested_count }})</button>
                             <button type="button" id="btn-going-{{ ev.id }}" class="react-btn{% if mine == 'going' %} active{% endif %}" onclick="reactToEvent({{ ev.id }}, 'going')">Going ({{ ev.going_count }})</button>
                             <button type="button" id="btn-not_going-{{ ev.id }}" class="react-btn{% if mine == 'not_going' %} active{% endif %}" onclick="reactToEvent({{ ev.id }}, 'not_going')">Not going / Maybe</button>
                         </div>
-                        <div style="color: #888; font-size: 0.75rem; margin-top: 6px;">Tap your answer again to undo it.</div>
+                        <div style="color: #888; font-size: 0.875rem; margin-top: 6px;">Tap your answer again to undo it.</div>
+
+                        <!-- ANONYMOUS COMMENTS -->
+                        <button type="button" class="cmt-toggle" onclick="toggleComments({{ ev.id }})">💬 Comments (anonymous)</button>
+                        <div class="cmt-box" id="cmt-box-{{ ev.id }}" style="display: none;">
+                            <div class="cmt-list" id="cmt-list-{{ ev.id }}"></div>
+                            <textarea id="cmt-input-{{ ev.id }}" class="cmt-input" maxlength="300" rows="2" placeholder="Write a comment. Your classmates will only see a nickname."></textarea>
+                            <button type="button" class="cmt-post" onclick="postComment({{ ev.id }})">Post anonymously</button>
+                            <div class="cmt-note">Only the school admin can see who wrote a comment, and only if someone reports abuse.</div>
+                        </div>
                     </div>
-                {% endfor %}
-                
-                {% if not has_school_events.found %}
-                <div style="color: #aaa; text-align: center; padding: 40px; background: rgba(0,0,0,0.3); border-radius: 8px; width: 100%; grid-column: 1 / -1;">
-                    No campus events scheduled right now.
+                    {% endfor %}
+                    </div>
                 </div>
-                {% endif %}
+                {% endfor %}
             </div>
         </div>
     </section>
@@ -953,7 +962,7 @@
                                             <input type="hidden" name="assignment_id" value="{{ a.id }}">
                                             <textarea name="answer_text" class="lms-input" rows="2" placeholder="Type your answer here..." style="margin-bottom: 10px;"></textarea>
                                             
-                                            <label style="color: #FFD700; font-size: 0.85rem; margin-bottom: 5px; display: block;">Upload Work (Optional):</label>
+                                            <label style="color: #FFD700; font-size: 0.875rem; margin-bottom: 5px; display: block;">Upload Work (Optional):</label>
                                             <input type="file" name="file" class="lms-input" accept="image/*,.pdf,.doc,.docx" style="padding: 8px;">
                                             
                                             <button type="submit" class="btn-gold" style="padding: 8px 16px; font-size: 0.9rem;">Turn In Work</button>
@@ -1048,7 +1057,7 @@
                     <!-- Calendar Header (Month/Year Controls) -->
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
                         <button onclick="changeMonth(-1)" class="btn-gold" style="padding: 8px 20px; width: auto; font-size: 1.2rem;">&larr;</button>
-                        <h3 id="calendar-month-year" style="color: white; margin: 0; font-size: 1.6rem; font-weight: bold; text-transform: uppercase;"></h3>
+                        <h3 id="calendar-month-year" style="color: white; margin: 0; font-size: 1.6rem; font-weight: bold; text-transform: none;"></h3>
                         <button onclick="changeMonth(1)" class="btn-gold" style="padding: 8px 20px; width: auto; font-size: 1.2rem;">&rarr;</button>
                     </div>
                     
@@ -1072,9 +1081,6 @@
                             <div style="font-size: 0.95rem; color: #fff; display: flex; align-items: center;">
                                 <span style="display:inline-block; width: 14px; height: 14px; background: #3498db; border-radius: 4px; margin-right: 12px;"></span> Campus Events
                             </div>
-                            <div style="font-size: 0.95rem; color: #fff; display: flex; align-items: center;">
-                                <span style="display:inline-block; width: 14px; height: 14px; background: #f1c40f; border-radius: 4px; margin-right: 12px;"></span> Homework / Activities
-                            </div>
                         </div>
                     </div>
 
@@ -1085,31 +1091,15 @@
                         <div id="master-agenda-list" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px; max-height: 400px; overflow-y: auto; padding-right: 5px;">
                             {% for ev in events %}
                             <div style="background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border-left: 5px solid #3498db;">
-                                <div style="color: #3498db; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Campus Event</div>
+                                <div style="color: #3498db; font-size: 0.875rem; font-weight: bold; text-transform: none;">Campus Event</div>
                                 <h4 style="color: white; margin: 5px 0; font-size: 1rem;">{{ ev.title }}</h4>
-                                <div style="color: #ccc; font-size: 0.85rem;" class="smart-date" data-raw="{{ ev.event_date }}">{{ ev.event_date }}</div>
+                                <div style="color: #ccc; font-size: 0.875rem;" class="smart-date" data-raw="{{ ev.event_date }}">{{ ev.event_date }}</div>
                             </div>
                             {% endfor %}
 
-                            {% for a in assignments %}
-                            <div style="background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border-left: 5px solid #f1c40f;">
-                                <div style="color: #f1c40f; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Assignment • {{ a.subject_name }}</div>
-                                <h4 style="color: white; margin: 5px 0; font-size: 1rem;">{{ a.title }}</h4>
-                                <div style="color: #ccc; font-size: 0.85rem;" class="smart-date" data-raw="{{ a.due_date if a.due_date else 'No Date' }}">{{ a.due_date if a.due_date else 'No Date' }}</div>
-                            </div>
-                            {% endfor %}
-
-                            {% for q in quizzes %}
-                            <div style="background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border-left: 5px solid #e74c3c;">
-                                <div style="color: #e74c3c; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Secure Exam • {{ q.subject_name }}</div>
-                                <h4 style="color: white; margin: 5px 0; font-size: 1rem;">{{ q.title }}</h4>
-                                <div style="color: #ccc; font-size: 0.85rem;" class="smart-date" data-raw="{{ q.due_date if q.due_date else 'No Date' }}">{{ q.due_date if q.due_date else 'No Date' }}</div>
-                            </div>
-                            {% endfor %}
-
-                            {% if not events and not assignments and not quizzes %}
+                            {% if not events %}
                             <div style="color: #aaa; text-align: center; padding: 30px 10px; background: rgba(0,0,0,0.3); border-radius: 8px;">
-                                Schedule is clear. No upcoming deadlines.
+                                No upcoming events.
                             </div>
                             {% endif %}
                         </div>
@@ -1130,7 +1120,7 @@
                     <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
                 </div>
                 <div>
-                    <h2 style="color: #FFD700; margin: 0 0 5px 0; font-size: 2rem; text-transform: uppercase; letter-spacing: 1px;">Bulletin Board</h2>
+                    <h2 style="color: #FFD700; margin: 0 0 5px 0; font-size: 2rem; text-transform: none; letter-spacing: 0;">Bulletin Board</h2>
                     <p style="color: #ccc; margin: 0; font-size: 1rem;">Official school-wide memos and class updates.</p>
                 </div>
             </div>
@@ -1146,12 +1136,12 @@
                         <!-- Top Row: Badges & Date -->
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
                             {% if ann.subject_id == 0 or ann.subject_id == '0' %}
-                                <span style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);">🚨 School-Wide Memo</span>
+                                <span style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.875rem; font-weight: bold; text-transform: none; letter-spacing: 0; box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);">🚨 School-Wide Memo</span>
                             {% else %}
-                                <span style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4);">📚 {{ ann.subject_name }}</span>
+                                <span style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.875rem; font-weight: bold; text-transform: none; letter-spacing: 0; box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4);">📚 {{ ann.subject_name }}</span>
                             {% endif %}
                             
-                            <span style="color: #888; font-size: 0.85rem; font-weight: 500;">📅 Posted: {{ ann.date_posted[:10] }}</span>
+                            <span style="color: #888; font-size: 0.875rem; font-weight: 500;">📅 Posted: {{ ann.date_posted[:10] }}</span>
                         </div>
                         
                         <!-- Title -->
@@ -1176,53 +1166,6 @@
         </div>
     </section>
 
-    <!-- VIEW: SCHOOL GALLERY -->
-    <section class="view-section" id="view-gallery" style="display: none;">
-        <div class="content-wrapper">
-            
-            <div class="page-header-box">
-                <h2>School Gallery</h2>
-                <p>Explore photo highlights from our past school activities and events.</p>
-            </div>
-
-            <!-- Category Filter Buttons (Auto-Generated by JS) -->
-            <div id="gallery-filters" style="display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
-                <button class="gallery-filter-btn active" onclick="filterGallery('All', this)" style="background: #FFD700; color: #800000; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s;">All Photos</button>
-                <!-- JavaScript will automatically insert the other category buttons here -->
-            </div>
-
-            <!-- Gallery Image Grid -->
-            <div class="gallery-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
-                {% set ns_gallery = namespace(count=0) %}
-                {% for ev in events %}
-                    {% if ev.image_path %}
-                        {% set ns_gallery.count = ns_gallery.count + 1 %}
-                        
-                        <div class="gallery-item" data-category="{{ ev.category | default('General Events') }}" style="position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 4/3; cursor: pointer; border: 1px solid rgba(255,215,0,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: 0.3s;" onmouseover="this.querySelector('.gallery-overlay').style.opacity='1'; this.querySelector('img').style.transform='scale(1.1)';" onmouseout="this.querySelector('.gallery-overlay').style.opacity='0'; this.querySelector('img').style.transform='scale(1)';">
-                            
-                            <img src="{{ url_for('static', filename='uploads/' + ev.image_path) }}" alt="{{ ev.title }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;">
-                            
-                            <!-- Hover Overlay with Title and Category -->
-                            <div class="gallery-overlay" style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(20,2,5,0.95), rgba(0,0,0,0.1)); opacity: 0; transition: 0.3s; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;">
-                                <span style="background: #FFD700; color: #800000; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; width: fit-content; margin-bottom: 8px; text-transform: uppercase;">{{ ev.category | default('General Events') }}</span>
-                                <h4 style="color: white; margin: 0 0 5px 0; font-size: 1.2rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.8);">{{ ev.title }}</h4>
-                                <span style="color: #ccc; font-size: 0.85rem;">{{ ev.event_date[:10] }}</span>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-
-            {% if ns_gallery.count == 0 %}
-                <div style="color: #aaa; text-align: center; padding: 50px; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.2);">
-                    <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor" style="color: #555; margin-bottom: 15px;"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                    <h3 style="margin: 0 0 10px 0; color: #fff;">Gallery is Empty</h3>
-                    <p style="margin: 0;">No event photos have been uploaded by teachers yet.</p>
-                </div>
-            {% endif %}
-        </div>
-    </section>
-
     <!-- VIEW: PROFILE SETUP -->
     <section class="view-section" id="view-profile" style="display: none;">
         <!-- Expanded to 1200px to perfectly match all other dashboard tabs -->
@@ -1236,22 +1179,22 @@
             <div class="lms-form" style="background: linear-gradient(135deg, rgba(59, 13, 19, 0.95), rgba(20, 2, 5, 0.98)); border-radius: 12px; border: 1px solid rgba(255, 215, 0, 0.2); box-shadow: 0 15px 35px rgba(0,0,0,0.5); padding: 35px; max-width: 100%; box-sizing: border-box;">
                 
                 <div style="margin-bottom: 30px;">
-                    <h3 style="color: white; margin-top: 0; font-size: 1.6rem; letter-spacing: 1px;">Complete Your Information</h3>
+                    <h3 style="color: white; margin-top: 0; font-size: 1.6rem; letter-spacing: 0;">Complete Your Information</h3>
                     <p style="color: #aaa; font-size: 0.95rem; margin: 0;">Upload a custom profile picture.</p>
                 </div>
                 
                 <form action="{{ url_for('update_profile') }}" method="POST" enctype="multipart/form-data">
                     
-                    <label style="color: #FFD700; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: block;">Profile Picture</label>
+                    <label style="color: #FFD700; font-size: 0.875rem; font-weight: bold; text-transform: none; margin-bottom: 8px; display: block;">Profile Picture</label>
                     <input type="file" name="profile_pic" accept="image/*" class="lms-input" style="margin-bottom: 25px; padding: 12px; background: rgba(0,0,0,0.4); border: 1px dashed #FFD700; border-radius: 8px; cursor: pointer; color: #ccc;">
                     
-                    <label style="color: #FFD700; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: block;">Full Name <span style="color: #e74c3c; font-size: 0.75rem;">(Locked)</span></label>
+                    <label style="color: #FFD700; font-size: 0.875rem; font-weight: bold; text-transform: none; margin-bottom: 8px; display: block;">Full Name <span style="color: #e74c3c; font-size: 0.875rem;">(Locked)</span></label>
                     <input type="text" class="lms-input" value="{{ full_name }}" disabled style="opacity: 0.5; cursor: not-allowed; margin-bottom: 25px; background: rgba(0,0,0,0.6); border-color: rgba(255,255,255,0.1);">
                     
-                    <label style="color: #FFD700; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: block;">Learner Reference Number (LRN)</label>
+                    <label style="color: #FFD700; font-size: 0.875rem; font-weight: bold; text-transform: none; margin-bottom: 8px; display: block;">Learner Reference Number (LRN)</label>
                     <input type="text" name="lrn" class="lms-input" value="{{ current_user_lrn | default('') }}" readonly title="Your LRN cannot be changed" placeholder="Enter your 12-digit LRN" required style="margin-bottom: 35px; transition: 0.3s; border: 1px solid rgba(255,215,0,0.3);" onfocus="this.style.borderColor='#FFD700'; this.style.boxShadow='0 0 12px rgba(255,215,0,0.2)';" onblur="this.style.borderColor='rgba(255,215,0,0.3)'; this.style.boxShadow='none';">
                     
-                    <button type="submit" class="btn-gold" style="width: 100%; font-size: 1.1rem; padding: 15px; border-radius: 8px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(255,215,0,0.3);">Save Profile</button>
+                    <button type="submit" class="btn-gold" style="width: 100%; font-size: 1.1rem; padding: 15px; border-radius: 8px; text-transform: none; letter-spacing: 0; box-shadow: 0 4px 15px rgba(255,215,0,0.3);">Save Profile</button>
                 </form>
             </div>
             
@@ -1282,21 +1225,34 @@
     <!-- HIDDEN PERSONAL EVENT MODAL -->
     <div id="personalEventModal" class="modal-overlay">
         <div class="modal-box">
-            <h3 style="color: #FFD700; margin-top: 0; font-size: 1.5rem; border-bottom: 1px solid rgba(255,215,0,0.3)";>Create Personal Event</h3>
-            <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 20px;">This event is private and only visible to you.</p>
+            <h3 style="color: #FFD700; margin-top: 0; font-size: 1.5rem; border-bottom: 1px solid rgba(255,215,0,0.3)";>Add a Calendar Note</h3>
+            <p style="color: #aaa; font-size: 0.875rem; margin-bottom: 20px;">Only you can see this note.</p>
             
-            <label style="color: #FFD700; font-size: 0.85rem; font-weight: bold; text-transform: uppercase;">Event Title</label>
-            <input type="text" id="pe-title" class="lms-input" placeholder="e.g., My Birthday!" style="border-color: rgba(255,215,0,0.5); margin-bottom: 15px;" required>
+            <label style="color: #FFD700; font-size: 0.875rem; font-weight: bold; text-transform: none;">Note Title</label>
+            <input type="text" id="pe-title" class="lms-input" placeholder="e.g., Study for quiz" style="border-color: rgba(255,215,0,0.5); margin-bottom: 15px;" required>
             
-            <label style="color: #FFD700; font-size: 0.85rem; font-weight: bold; text-transform: uppercase;">Date</label>
+            <label style="color: #FFD700; font-size: 0.875rem; font-weight: bold; text-transform: none;">Date</label>
             <input type="date" id="pe-date" class="lms-input" style="border-color: rgba(255,215,0,0.5); color-scheme: dark; margin-bottom: 15px;" required>
             
-            <label style="color: #FFD700; font-size: 0.85rem; font-weight: bold; text-transform: uppercase;">Notes / Details</label>
-            <textarea id="pe-desc" class="lms-input" rows="3" placeholder="Any extra details..." style="border-color: rgba(255,215,0,0.5); margin-bottom: 20px;"></textarea>
+            <label style="color: #FFD700; font-size: 0.875rem; font-weight: bold; text-transform: none;">Notes / Details</label>
+            <textarea id="pe-desc" class="lms-input" rows="3" placeholder="Any extra details..." style="border-color: rgba(255,215,0,0.5); margin-bottom: 15px;"></textarea>
             
+            <label style="color: #FFD700; font-size: 0.875rem; font-weight: bold; text-transform: none;">Color</label>
+            <div id="pe-color-row" style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 8px 0 20px 0;">
+                <button type="button" class="pe-swatch" data-color="#e74c3c" style="background:#e74c3c" title="Red"></button>
+                <button type="button" class="pe-swatch" data-color="#e67e22" style="background:#e67e22" title="Orange"></button>
+                <button type="button" class="pe-swatch" data-color="#27ae60" style="background:#27ae60" title="Green"></button>
+                <button type="button" class="pe-swatch" data-color="#1abc9c" style="background:#1abc9c" title="Teal"></button>
+                <button type="button" class="pe-swatch" data-color="#e84393" style="background:#e84393" title="Pink"></button>
+                <button type="button" class="pe-swatch" data-color="#7f8c8d" style="background:#7f8c8d" title="Gray"></button>
+                <label style="display:flex; align-items:center; gap:6px; color:#ccc; font-size:0.875rem; cursor:pointer; margin-left:4px;">
+                    <input type="color" id="pe-color" value="#e67e22" style="width:32px; height:28px; border:none; padding:0; background:none; cursor:pointer;"> Custom
+                </label>
+            </div>
+
             <div style="display: flex; gap: 10px;">
                 <button onclick="document.getElementById('personalEventModal').style.display='none';" style="flex: 1; background: rgba(0,0,0,0.5); color: white; border: 1px solid #555; padding: 12px; border-radius: 6px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(0,0,0,0.5)'">Cancel</button>
-                <button onclick="savePersonalEvent()" style="flex: 1; background: #FFD700; color: #800000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(155,89,182,0.4);">Save Event</button>
+                <button onclick="savePersonalEvent()" style="flex: 1; background: #FFD700; color: #800000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(255,215,0,0.3);">Save Note</button>
             </div>
         </div>
     </div>
@@ -1307,16 +1263,6 @@
         let schoolData = [
             {% for ev in events %}
                 { type: 'campus', date: '{{ ev.event_date[:10] }}', title: '{{ ev.title | replace("'", "\\'") }}' },
-            {% endfor %}
-            {% for a in assignments %}
-                {% if a.due_date %}
-                { type: 'hw', date: '{{ a.due_date[:10] }}', title: '{{ a.title | replace("'", "\\'") }}' },
-                {% endif %}
-            {% endfor %}
-            {% for q in quizzes %}
-                {% if q.due_date %}
-                { type: 'exam', date: '{{ q.due_date[:10] }}', title: '{{ q.title | replace("'", "\\'") }}' },
-                {% endif %}
             {% endfor %}
         ];
 
@@ -1359,15 +1305,15 @@
                     let shortTitle = e.title.length > 12 ? e.title.substring(0, 12) + "..." : e.title;
                     
                     if (e.type === 'campus') { cssClass = 'event-campus'; }
-                    else if (e.type === 'hw') { cssClass = 'event-hw'; }
-                    else if (e.type === 'exam') { cssClass = 'event-exam'; }
                     else {
                         // IT IS A PERSONAL EVENT
                         cssClass = 'event-personal';
                         shortTitle = '🗑️ ' + shortTitle; // Add trash icon indicator
+                        let noteColor = e.color || '#e67e22';
+                        extraAttr = `style="background: ${noteColor}; color: ${textColorFor(noteColor)}; border-left: 2px solid rgba(255,255,255,0.6);" `;
                         
                         // MAGIC FIX: Stop the click from opening the "Add" menu, and prompt to delete instead!
-                        extraAttr = `onclick="event.stopPropagation(); if(confirm('Do you want to delete your personal event: ${e.title}?')) deletePersonalEvent(${e.id});" title="Tap to delete"`;
+                        extraAttr += `onclick="event.stopPropagation(); if(confirm('Do you want to delete your note: ${e.title}?')) deletePersonalEvent(${e.id});" title="Tap to delete"`;
                     }
                     
                     dayEventsHTML += `<div class="event-dot ${cssClass}" ${extraAttr}>${shortTitle}</div>`;
@@ -1375,7 +1321,7 @@
                 
                 // ADDED: onclick="openPersonalEventModal('${dateString}')" and style="cursor: pointer;"
                 grid.innerHTML += `
-                    <div class="cal-cell ${isToday}" onclick="openPersonalEventModal('${dateString}')" style="cursor: pointer;" title="Tap to add personal event">
+                    <div class="cal-cell ${isToday}" onclick="openPersonalEventModal('${dateString}')" style="cursor: pointer;" title="Tap to add a note">
                         <span class="cal-date">${day}</span>
                         <div class="dot-container">${dayEventsHTML}</div>
                     </div>
@@ -1394,7 +1340,8 @@
             if(!title || !date) { alert("Please enter a Title and Date."); return; }
 
             let personalEvents = JSON.parse(localStorage.getItem('studentPersonalEvents')) || [];
-            personalEvents.push({ type: 'personal', title: title, date: date, desc: desc, id: Date.now() });
+            let color = document.getElementById('pe-color').value || '#e67e22';
+            personalEvents.push({ type: 'personal', title: title, date: date, desc: desc, color: color, id: Date.now() });
             
             localStorage.setItem('studentPersonalEvents', JSON.stringify(personalEvents));
             
@@ -1407,7 +1354,7 @@
             renderCalendar(); // Instantly refresh!
         }
 
-        // Injects Violet items into the Agenda List
+        // Injects personal notes into the Agenda List
         function renderPersonalAgenda(personalEvents) {
             const agendaContainer = document.getElementById('master-agenda-list');
             if(!agendaContainer) return;
@@ -1420,12 +1367,12 @@
 
             personalEvents.forEach(ev => {
                 const html = `
-                <div class="agenda-personal" id="pe-${ev.id}">
+                <div class="agenda-personal" id="pe-${ev.id}" style="border-left-color: ${ev.color || '#e67e22'};">
                     <button onclick="deletePersonalEvent(${ev.id})" style="position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.5); color: #ffcccc; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#e74c3c'; this.style.color='white';" title="Delete Event">Delete</button>
-                    <div style="color: #FFD700; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Personal Event</div>
+                    <div style="color: #FFD700; font-size: 0.875rem; font-weight: bold; text-transform: none;">My Note</div>
                     <h4 style="color: white; margin: 5px 0; font-size: 1rem;">${ev.title}</h4>
-                    <div style="color: #ccc; font-size: 0.85rem; font-weight: bold;">📅 ${ev.date}</div>
-                    ${ev.desc ? `<div style="color: #aaa; font-size: 0.85rem; margin-top: 8px; font-style: italic;">${ev.desc}</div>` : ''}
+                    <div style="color: #ccc; font-size: 0.875rem; font-weight: bold;">📅 ${ev.date}</div>
+                    ${ev.desc ? `<div style="color: #aaa; font-size: 0.875rem; margin-top: 8px; font-style: italic;">${ev.desc}</div>` : ''}
                 </div>`;
                 
                 // Add it to the top of the agenda list
@@ -1447,7 +1394,25 @@
         }
 
         // Opens the popup and automatically fills in the date you clicked
+        function textColorFor(hex) {
+            let h = hex.replace('#', '');
+            if (h.length === 3) h = h.split('').map(c => c + c).join('');
+            const r = parseInt(h.substr(0, 2), 16), g = parseInt(h.substr(2, 2), 16), b = parseInt(h.substr(4, 2), 16);
+            return ((r * 299 + g * 587 + b * 114) / 1000) > 150 ? '#1e060a' : '#ffffff';
+        }
+
+        function selectNoteColor(hex) {
+            document.getElementById('pe-color').value = hex;
+            document.querySelectorAll('.pe-swatch').forEach(b => b.classList.toggle('selected', b.dataset.color.toLowerCase() === hex.toLowerCase()));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.pe-swatch').forEach(b => b.addEventListener('click', () => selectNoteColor(b.dataset.color)));
+            document.getElementById('pe-color').addEventListener('input', e => selectNoteColor(e.target.value));
+        });
+
         function openPersonalEventModal(dateString) {
+            selectNoteColor('#e67e22');
             document.getElementById('pe-title').value = '';
             document.getElementById('pe-date').value = dateString; // Pre-fills the clicked date!
             document.getElementById('pe-desc').value = '';
@@ -1468,11 +1433,16 @@
                 const rawDate = el.getAttribute('data-raw');
                 if (rawDate && rawDate !== 'No Date' && rawDate.trim() !== '') {
                     // Convert backend date strings to JS Date objects
-                    const d = new Date(rawDate);
-                    // Check if it's a valid date
-                    if (!isNaN(d.getTime())) {
-                        const dayName = days[d.getDay()];
-                        el.innerHTML = `<strong>${dayName}</strong>, ${el.innerHTML}`;
+                    const m = rawDate.match(/^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2}))?/);
+                    if (m) {
+                        const d = new Date(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0));
+                        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                        let text = `<strong>${days[d.getDay()]}</strong>, ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+                        if (m[4]) {
+                            const h12 = d.getHours() % 12 || 12;
+                            text += ` at ${h12}:${String(d.getMinutes()).padStart(2, '0')} ${d.getHours() >= 12 ? 'PM' : 'AM'}`;
+                        }
+                        el.innerHTML = text;
                     }
                 }
             });
@@ -1612,9 +1582,9 @@
                     <div onclick="switchViewAndRemember('${m.dest}'); document.getElementById('globalSearchInput').value=''; document.getElementById('searchResults').style.display='none';" style="padding: 12px 15px; margin-bottom: 8px; background: rgba(0,0,0,0.4); border-radius: 8px; border-left: 4px solid ${m.color}; cursor: pointer; display: flex; flex-direction: column; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(0,0,0,0.4)'">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                             <strong style="color: white; font-size: 1.05rem;">${m.title}</strong>
-                            <span style="background: ${m.color}33; color: ${m.color}; padding: 3px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase;">${m.type}</span>
+                            <span style="background: ${m.color}33; color: ${m.color}; padding: 3px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; text-transform: none;">${m.type}</span>
                         </div>
-                        <span style="color: #aaa; font-size: 0.85rem;">${m.detail}</span>
+                        <span style="color: #aaa; font-size: 0.875rem;">${m.detail}</span>
                     </div>
                 `).join('');
                 resultsDiv.style.display = 'block';
@@ -1690,92 +1660,6 @@
             calContainer.innerHTML = html;
         });
     </script>
-    <!-- Dynamic Gallery Slideshow Script -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            let slides = document.querySelectorAll('.gallery-slide');
-            
-            if(slides.length > 0) {
-                // Instantly show the first image
-                let currentSlide = 0;
-                slides[currentSlide].style.opacity = 1;
-                
-                // If there are multiple images, start the rotating timer
-                if(slides.length > 1) {
-                    setInterval(() => {
-                        slides[currentSlide].style.opacity = 0; // Fade out current
-                        currentSlide = (currentSlide + 1) % slides.length; // Move to next
-                        slides[currentSlide].style.opacity = 1; // Fade in next
-                    }, 4000); // Changes picture every 4 seconds
-                }
-            }
-        });
-    </script>
-
-    <!-- Gallery Category Filter Logic -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const galleryItems = document.querySelectorAll('.gallery-item');
-            if (galleryItems.length === 0) return;
-
-            // 1. Find all unique categories from the loaded images
-            const categories = new Set();
-            galleryItems.forEach(item => {
-                categories.add(item.getAttribute('data-category'));
-            });
-
-            const filterContainer = document.getElementById('gallery-filters');
-            
-            // 2. Create a button for each unique category found
-            categories.forEach(cat => {
-                const btn = document.createElement('button');
-                btn.className = 'gallery-filter-btn';
-                btn.innerText = cat;
-                
-                // Base styles for unselected buttons
-                btn.style.background = 'rgba(0,0,0,0.4)';
-                btn.style.color = '#fff';
-                btn.style.border = '1px solid rgba(255,255,255,0.2)';
-                btn.style.padding = '8px 16px';
-                btn.style.borderRadius = '20px';
-                btn.style.cursor = 'pointer';
-                btn.style.transition = '0.2s';
-                
-                btn.onclick = () => filterGallery(cat, btn);
-                filterContainer.appendChild(btn);
-            });
-        });
-
-        // 3. Handle what happens when a button is clicked
-        function filterGallery(category, clickedBtn) {
-            // Reset all buttons to unselected style
-            const buttons = document.querySelectorAll('.gallery-filter-btn');
-            buttons.forEach(btn => {
-                btn.style.background = 'rgba(0,0,0,0.4)';
-                btn.style.color = '#fff';
-                btn.style.border = '1px solid rgba(255,255,255,0.2)';
-                btn.style.fontWeight = 'normal';
-            });
-            
-            // Highlight the clicked button in gold
-            if (clickedBtn) {
-                clickedBtn.style.background = '#FFD700';
-                clickedBtn.style.color = '#800000';
-                clickedBtn.style.border = 'none';
-                clickedBtn.style.fontWeight = 'bold';
-            }
-
-            // Show or hide the images based on the category
-            const items = document.querySelectorAll('.gallery-item');
-            items.forEach(item => {
-                if (category === 'All' || item.getAttribute('data-category') === category) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
-    </script>
     <script>
         // Phone menu: open/close the drawer, and close it after picking something
         (function () {
@@ -1787,84 +1671,122 @@
             document.querySelectorAll('.permanent-sidebar .side-link, .permanent-sidebar > div[onclick]').forEach(el => el.addEventListener('click', () => setOpen(false)));
         })();
     </script>
-<!-- NEW-POST NOTIFICATIONS: red badge on Announcements / Events + a pop-up when something new is posted -->
-<style>
-    .nf-badge { display:inline-block; min-width:18px; height:18px; line-height:18px; padding:0 5px; margin-left:6px; border-radius:9px; background:#e74c3c; color:#fff; font-size:11px; font-weight:bold; text-align:center; vertical-align:middle; }
-    #nf-toast { position:fixed; top:18px; right:18px; z-index:99999; display:flex; flex-direction:column; gap:10px; max-width:min(340px, calc(100vw - 36px)); }
-    .nf-item { background:#3b0d13; color:#fff; border:1px solid #FFD700; border-left:5px solid #FFD700; border-radius:8px; padding:12px 14px; box-shadow:0 8px 24px rgba(0,0,0,.5); font-size:.9rem; cursor:pointer; animation:nfIn .3s ease; }
-    .nf-item strong { color:#FFD700; display:block; margin-bottom:3px; }
-    @keyframes nfIn { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:none; } }
-</style>
-<div id="nf-toast"></div>
-<script>
-(function () {
-    var URL_LATEST = "{{ url_for('api_latest') }}";
-    var KIND = "{{ 'staff' if session.get('teacher_id') else 'student' }}";
-    var WHO = "{{ session.get('teacher_id') or session.get('student_id') or '' }}";
-    var K_ANN = 'seen_ann_' + KIND + '_' + WHO, K_EV = 'seen_ev_' + KIND + '_' + WHO;
-    var last = { ann: [], ev: [] }, announced = 0;
-
-    function get(k) { try { var v = localStorage.getItem(k); return v === null ? null : parseInt(v, 10); } catch (e) { return null; } }
-    function set(k, v) { try { localStorage.setItem(k, String(v)); } catch (e) {} }
-    function maxId(list) { return list.reduce(function (m, x) { return Math.max(m, x.id); }, 0); }
-
-    function badge(navId, count) {
-        var link = document.getElementById(navId); if (!link) return;
-        var b = link.querySelector('.nf-badge');
-        if (!count) { if (b) b.remove(); return; }
-        if (!b) { b = document.createElement('span'); b.className = 'nf-badge'; link.appendChild(b); }
-        b.textContent = count > 9 ? '9+' : count;
-    }
-    function toast(title, text, view) {
-        var box = document.getElementById('nf-toast'); if (!box) return;
-        var d = document.createElement('div'); d.className = 'nf-item';
-        var s = document.createElement('strong'); s.textContent = title;
-        var t = document.createElement('span'); t.textContent = text;
-        d.appendChild(s); d.appendChild(t);
-        d.onclick = function () { d.remove(); if (window.switchViewAndRemember) window.switchViewAndRemember(view); };
-        box.appendChild(d);
-        setTimeout(function () { d.remove(); }, 9000);
-    }
-    function unseen(list, key) { var seen = get(key) || 0; return list.filter(function (x) { return x.id > seen; }); }
-    function refreshBadges() {
-        badge('nav-announcements', unseen(last.ann, K_ANN).length);
-        badge('nav-events', unseen(last.ev, K_EV).length);
-    }
-    function markSeen(view) {
-        if (view === 'announcements') set(K_ANN, maxId(last.ann));
-        if (view === 'events') set(K_EV, maxId(last.ev));
-        refreshBadges();
-    }
-
-    function poll(first) {
-        fetch(URL_LATEST, { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (data) {
-            if (!data || !data.kind) return;
-            var newAnn = data.announcements || [], newEv = data.events || [];
-            if (get(K_ANN) === null) set(K_ANN, maxId(newAnn));      // very first visit: nothing is "new" yet
-            if (get(K_EV) === null) set(K_EV, maxId(newEv));
-            var shownA = maxId(last.ann), shownE = maxId(last.ev);
-            last = { ann: newAnn, ev: newEv };
-            refreshBadges();
-            // pop-ups: on page load for anything unread, later only for things that just arrived
-            unseen(newAnn, K_ANN).filter(function (x) { return first || x.id > shownA; }).slice(0, 3).forEach(function (x) {
-                toast('New announcement', x.title + (x.who ? ' - by ' + x.who : ''), 'announcements'); });
-            unseen(newEv, K_EV).filter(function (x) { return first || x.id > shownE; }).slice(0, 3).forEach(function (x) {
-                toast('New event', x.title + (x.who ? ' - by ' + x.who : ''), 'events'); });
-        }).catch(function () {});
-    }
-
-    window.addEventListener('load', function () {
-        var orig = window.switchViewAndRemember;
-        if (typeof orig === 'function') {
-            window.switchViewAndRemember = function (v) { var out = orig.apply(this, arguments); markSeen(v); return out; };
+    <style>
+        /* Scrollable month-by-month event list */
+        .events-scroll { margin-top: 20px; max-height: 75vh; overflow-y: auto; padding-right: 8px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+        .events-scroll::-webkit-scrollbar { width: 8px; }
+        .events-scroll::-webkit-scrollbar-thumb { background: #FFD700; border-radius: 4px; }
+        .month-block { margin-bottom: 30px; }
+        .month-heading { position: sticky; top: 0; z-index: 5; background: rgba(59, 13, 19, 0.97); color: #FFD700; font-weight: bold; font-size: 1.25rem; text-transform: uppercase; letter-spacing: 1px; padding: 12px 16px; margin-bottom: 15px; border-left: 4px solid #FFD700; border-radius: 4px; }
+        /* Anonymous comments */
+        .cmt-toggle { margin-top: 12px; background: rgba(0,0,0,0.3); color: #FFD700; border: 1px solid rgba(255,215,0,0.4); padding: 8px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .cmt-toggle:hover { background: rgba(255,215,0,0.15); }
+        .cmt-box { margin-top: 10px; }
+        .cmt-list { max-height: 220px; overflow-y: auto; margin-bottom: 10px; }
+        .cmt-item { background: rgba(0,0,0,0.35); border-radius: 6px; padding: 8px 10px; margin-bottom: 6px; color: #eee; font-size: 0.9rem; word-wrap: break-word; }
+        .cmt-item b { color: #FFD700; font-size: 0.8rem; display: block; }
+        .cmt-item button { float: right; background: none; border: none; color: #ff9d9d; cursor: pointer; font-size: 0.8rem; }
+        .cmt-input { width: 100%; box-sizing: border-box; background: rgba(20,2,5,0.9); color: white; border: 1px solid rgba(255,215,0,0.5); border-radius: 6px; padding: 8px; font-family: inherit; }
+        .cmt-post { margin-top: 6px; width: 100%; background: #FFD700; color: #800000; border: none; padding: 9px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .cmt-note { color: #888; font-size: 0.75rem; margin-top: 6px; }
+    </style>
+    <script>
+        // ---- Anonymous event comments ----
+        function toggleComments(id) {
+            const box = document.getElementById('cmt-box-' + id);
+            const open = box.style.display === 'none';
+            box.style.display = open ? 'block' : 'none';
+            if (open) loadComments(id);
         }
-        poll(true);
-        setInterval(function () { poll(false); }, 30000);
-        // if the page re-opens straight on Announcements / Events, count them as read
-        try { var cur = localStorage.getItem(KIND === 'staff' ? 'activeTeacherView' : 'activeStudentView') || ''; if (cur) setTimeout(function () { markSeen(cur); }, 1500); } catch (e) {}
-    });
-})();
-</script>
+        function loadComments(id) {
+            fetch('/event/' + id + '/comments').then(r => r.json()).then(data => {
+                const list = document.getElementById('cmt-list-' + id);
+                list.innerHTML = '';
+                if (data.status !== 'success' || !data.comments.length) {
+                    list.innerHTML = '<div style="color:#888; font-size:0.85rem;">No comments yet. Be the first!</div>';
+                    return;
+                }
+                data.comments.forEach(c => {
+                    const item = document.createElement('div');
+                    item.className = 'cmt-item';
+                    const name = document.createElement('b');
+                    name.textContent = c.name + (c.mine ? ' (you)' : '');
+                    const text = document.createElement('span');
+                    text.textContent = c.text;
+                    if (c.mine) {
+                        const del = document.createElement('button');
+                        del.textContent = 'Delete';
+                        del.onclick = () => { if (confirm('Delete your comment?')) fetch('/event/comment/delete/' + c.id, {method: 'POST'}).then(() => loadComments(id)); };
+                        name.appendChild(del);
+                    }
+                    item.appendChild(name); item.appendChild(text);
+                    list.appendChild(item);
+                });
+                list.scrollTop = list.scrollHeight;
+            });
+        }
+        function postComment(id) {
+            const input = document.getElementById('cmt-input-' + id);
+            const text = input.value.trim();
+            if (!text) return;
+            fetch('/event/' + id + '/comment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text })
+            }).then(r => r.json()).then(data => {
+                if (data.status === 'success') { input.value = ''; loadComments(id); }
+                else alert(data.message || 'Could not post your comment.');
+            });
+        }
+        // When the Events page opens, jump to the current month
+        function scrollEventsToThisMonth() {
+            const box = document.getElementById('events-school');
+            if (!box) return;
+            const now = new Date();
+            const key = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+            const target = Array.from(box.querySelectorAll('.month-block')).find(b => b.dataset.month && b.dataset.month >= key);
+            if (target) box.scrollTop = target.offsetTop - box.offsetTop;
+        }
+        document.getElementById('nav-events') && document.getElementById('nav-events').addEventListener('click', () => setTimeout(scrollEventsToThisMonth, 100));
+    </script>
 
+    <!-- ===== NO-SCROLL HOME (desktop): the dashboard home screen always fits the window ===== -->
+    <style>
+        @media (min-width: 769px) {
+            /* lock page scrolling ONLY while the home view is showing (other pages still scroll) */
+            html:has(#view-home:not([style*="display: none"])),
+            body:has(#view-home:not([style*="display: none"])) { overflow: hidden !important; height: 100vh !important; }
+            #view-home { padding-top: 0 !important; }
+            #view-home .home-container { padding-top: 28px !important; gap: 18px !important; align-content: start !important; }
+            #view-home #mobile-search-reorder { margin-bottom: 10px !important; }
+            #view-home .school-large-logo { margin-bottom: 10px !important; }
+        }
+    </style>
+    <script>
+        // If the home screen is still taller than the window (small laptop screens), shrink it a little so it never needs scrolling
+        (function () {
+            function fitHome() {
+                const home = document.getElementById('view-home');
+                const box = home && home.querySelector('.home-container');
+                if (!box) return;
+                box.style.zoom = '';
+                if (window.innerWidth <= 768 || home.style.display === 'none') return;
+                const need = box.getBoundingClientRect().bottom + window.scrollY + 12;
+                if (need > window.innerHeight) box.style.zoom = Math.max(0.5, window.innerHeight / need).toFixed(3);
+            }
+            const original = window.switchViewAndRemember;
+            if (typeof original === 'function') {
+                window.switchViewAndRemember = function () {
+                    const r = original.apply(this, arguments);
+                    fitHome();
+                    return r;
+                };
+            }
+            window.addEventListener('load', fitHome);
+            window.addEventListener('resize', fitHome);
+            document.addEventListener('DOMContentLoaded', () => setTimeout(fitHome, 0));
+            setTimeout(fitHome, 300);
+        })();
+    </script>
 </body>
 </html>
