@@ -438,7 +438,7 @@ def dashboard():
         SELECT ev.*, IFNULL(s.subject_name, 'Campus-Wide Event') as subject_name
         FROM events ev
         LEFT JOIN subjects s ON ev.subject_id = s.id
-        WHERE ev.is_school_wide = 1 OR ev.subject_id = 0 
+        WHERE ev.is_school_wide = 1 OR ev.subject_id = 0 OR ev.subject_id IS NULL
         OR ev.subject_id IN (SELECT subject_id FROM enrollments WHERE student_id = ?)
         ORDER BY ev.event_date ASC
     ''', (student_id,)).fetchall()
