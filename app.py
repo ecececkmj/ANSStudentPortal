@@ -60,6 +60,13 @@ start_watcher()        # keeps watching the Excel file: save it and the site upd
 _c = sqlite3.connect('database.db')
 _c.execute('CREATE TABLE IF NOT EXISTS event_reactions (student_id INTEGER, event_id INTEGER, action TEXT, PRIMARY KEY (student_id, event_id, action))')
 _c.commit()
+# columns used by the "new" badges (students.last_seen_ann / last_seen_ev) - added automatically if missing
+for _col in ('last_seen_ann', 'last_seen_ev'):
+    try:
+        _c.execute(f'ALTER TABLE students ADD COLUMN {_col} INTEGER DEFAULT 0')
+        _c.commit()
+    except sqlite3.OperationalError:
+        pass                                           # already there
 _c.close()
 
 def get_db_connection():
