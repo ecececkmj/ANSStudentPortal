@@ -744,16 +744,18 @@ def is_admin_user(conn):
 def delete_announcement(ann_id):
     if 'teacher_id' not in session: return redirect(url_for('teacher_login'))
     conn = get_db_connection()
-    ann = conn.execute('SELECT teacher_id FROM announcements WHERE id = ?', (ann_id,)).fetchone()
-    if not ann:
-        flash('Announcement not found.')
-    elif ann['teacher_id'] == session['teacher_id'] or is_admin_user(conn):
-        conn.execute('DELETE FROM announcements WHERE id = ?', (ann_id,))
-        conn.commit()
-        flash('Announcement deleted.')
-    else:
-        flash('You can only delete your own announcements.')
-    conn.close()
+    try:
+        ann = conn.execute('SELECT teacher_id FROM announcements WHERE id = ?', (ann_id,)).fetchone()
+        if not ann:
+            flash('Announcement not found.')
+        elif ann['teacher_id'] == session['teacher_id'] or is_admin_user(conn):
+            conn.execute('DELETE FROM announcements WHERE id = ?', (ann_id,))
+            conn.commit()
+            flash('Announcement deleted.')
+        else:
+            flash('You can only delete your own announcements.')
+    finally:
+        conn.close()
     return redirect(url_for('teacher_dashboard'))
 
 @app.route('/teacher/event/add', methods=['POST'])
@@ -1407,17 +1409,19 @@ def react_event():
 def delete_event(event_id):
     if 'teacher_id' not in session: return redirect(url_for('teacher_login'))
     conn = get_db_connection()
-    ev = conn.execute('SELECT teacher_id FROM events WHERE id = ?', (event_id,)).fetchone()
-    if not ev:
-        flash('Event not found.')
-    elif ev['teacher_id'] == session['teacher_id'] or is_admin_user(conn):
-        conn.execute('DELETE FROM event_reactions WHERE event_id = ?', (event_id,))
-        conn.execute('DELETE FROM events WHERE id = ?', (event_id,))
-        conn.commit()
-        flash('Event deleted successfully.')
-    else:
-        flash('You can only delete your own events.')
-    conn.close()
+    try:
+        ev = conn.execute('SELECT teacher_id FROM events WHERE id = ?', (event_id,)).fetchone()
+        if not ev:
+            flash('Event not found.')
+        elif ev['teacher_id'] == session['teacher_id'] or is_admin_user(conn):
+            conn.execute('DELETE FROM event_reactions WHERE event_id = ?', (event_id,))
+            conn.execute('DELETE FROM events WHERE id = ?', (event_id,))
+            conn.commit()
+            flash('Event deleted successfully.')
+        else:
+            flash('You can only delete your own events.')
+    finally:
+        conn.close()
     return redirect(url_for('teacher_dashboard'))
 
 if __name__ == '__main__':
