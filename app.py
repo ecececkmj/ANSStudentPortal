@@ -410,7 +410,8 @@ def dashboard():
         else:
             current_user_lrn = ''
             current_user_phone = ''
-            current_user_profile_pic = None
+            current_user_profil
+            e_pic = None
     except sqlite3.OperationalError:
         conn.execute('ALTER TABLE students ADD COLUMN phone TEXT')
         conn.execute('ALTER TABLE students ADD COLUMN profile_pic TEXT')
@@ -462,9 +463,15 @@ def dashboard():
         events_by_month.append((label, items))
     try:
         seen = conn.execute('SELECT last_seen_ann, last_seen_ev FROM students WHERE id = ?', (student_id,)).fetchone()
-        last_seen_ann, last_seen_ev = (seen['last_seen_ann'] or 0), (seen['last_seen_ev'] or 0)
+        if seen:
+            last_seen_ann = seen['last_seen_ann'] or 0
+            last_seen_ev = seen['last_seen_ev'] or 0
+        else:
+            last_seen_ann = 0
+            last_seen_ev = 0
     except sqlite3.OperationalError:
-        last_seen_ann = last_seen_ev = 0
+        last_seen_ann = 0
+        last_seen_ev = 0
     new_ann_count = sum(1 for a in announcements if a['id'] > last_seen_ann)
     new_ev_count = sum(1 for e in events if e['id'] > last_seen_ev)
     max_ann_id = max([a['id'] for a in announcements], default=0)
