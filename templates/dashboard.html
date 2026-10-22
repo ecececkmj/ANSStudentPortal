@@ -676,7 +676,7 @@
                     <h3>Events {% if new_ev_count %}<span class="new-badge" id="widget-badge-events">{{ new_ev_count }} new</span>{% endif %}</h3>
                     {% for ev in events[:2] %}
                     <div class="widget-feed-item">
-                        <span class="widget-feed-date">{{ (ev.event_date or '')[:10] }}</span>
+                        <span class="widget-feed-date">{{ (ev.event_date or '').split('T')[0] }}</span>
                         <div class="widget-feed-text">{{ ev.title }}</div>
                     </div>
                     {% else %}
