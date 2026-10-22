@@ -400,17 +400,23 @@ def dashboard():
     student_id = session['student_id']
     
     # SAFELY FETCH PROFILE DATA (Auto-creates columns if they are missing!)
+    # SAFELY FETCH PROFILE DATA
     try:
         student = conn.execute('SELECT lrn, phone, profile_pic FROM students WHERE id = ?', (student_id,)).fetchone()
-        current_user_lrn = student['lrn'] if student['lrn'] else ''
-        current_user_phone = student['phone'] if student['phone'] else ''
-        current_user_profile_pic = student['profile_pic']
+        if student:
+            current_user_lrn = student['lrn'] if student['lrn'] else ''
+            current_user_phone = student['phone'] if student['phone'] else ''
+            current_user_profile_pic = student['profile_pic']
+        else:
+            current_user_lrn = ''
+            current_user_phone = ''
+            current_user_profile_pic = None
     except sqlite3.OperationalError:
         conn.execute('ALTER TABLE students ADD COLUMN phone TEXT')
         conn.execute('ALTER TABLE students ADD COLUMN profile_pic TEXT')
         conn.commit()
         student = conn.execute('SELECT lrn, phone, profile_pic FROM students WHERE id = ?', (student_id,)).fetchone()
-        current_user_lrn = student['lrn'] if student['lrn'] else ''
+        current_user_lrn = student['lrn'] if (student and student['lrn']) else ''
         current_user_phone = ''
         current_user_profile_pic = None
     
