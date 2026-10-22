@@ -9,6 +9,7 @@ import time
 import uuid
 import unicodedata
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 from setup_db import setup_database
@@ -27,6 +28,8 @@ except ImportError:
 
 load_dotenv()
 app = Flask(__name__)
+from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
 
 # 2. Only wrap your app if running locally and the module exists
 if has_cloudflared and os.getenv('RENDER') != 'true':
@@ -189,14 +192,11 @@ def login():
 
         if student and check_password_hash(student['password_hash'], password):
             clear_fails(acct_key)
-            if student['is_approved'] == 0:
-                flash('Account pending teacher approval.')
-            else:
-                session.clear()
-                session.permanent = True
-                session['student_id'] = student['id']
-                session['full_name'] = student['full_name']
-                return redirect(url_for('dashboard'))
+            session.clear()
+            session.permanent = True
+            session['student_id'] = student['id']
+            session['full_name'] = student['full_name']
+            return redirect(url_for('dashboard'))
         else:
             record_fail(acct_key); record_fail(ip_key)
             flash('Invalid LRN or password')
@@ -210,6 +210,10 @@ def normalize_name(text):
     text = re.sub(r'[^a-z0-9 ]', ' ', text.lower())
     return ' '.join(text.split())
 
+def same_name(a, b):
+    """True if both names have the same words in any order (Juan Cruz = Cruz, Juan)."""
+    return sorted(normalize_name(a).split()) == sorted(normalize_name(b).split())
+
 def normalize_section(text):
     """11-Carina, 11 carina and 11carina are treated as the same."""
     return re.sub(r'[^a-z0-9]', '', (text or '').lower())
@@ -219,7 +223,13 @@ EXCEPTION_SECTIONS = {'12leda'}
 
 def is_allowed_record(record):
     """Grade 11 student, or a member of an exception section (e.g. 12-Leda)."""
-    return bool(record) and (record['grade_level'] == 11 or normalize_section(record['section']) in EXCEPTION_SECTIONS)
+    if not record:
+        return False
+    try:
+        grade = int(float(record['grade_level']))
+    except (TypeError, ValueError):
+        grade = None
+    return grade == 11 or normalize_section(record['section']) in EXCEPTION_SECTIONS
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -254,7 +264,7 @@ def register():
         # Only Grade 11 students on the masterlist, with matching name AND section, can sign up.
         # One shared message, so nobody can use this form to find out which LRNs are on the list.
         if (not is_allowed_record(record)
-                or normalize_name(full_name) != normalize_name(record['full_name'])
+                or not same_name(full_name, record['full_name'])
                 or normalize_section(section) != normalize_section(record['section'])):
             conn.close()
             record_fail('reg:' + client_ip())
@@ -674,18 +684,6 @@ def teacher_dashboard():
     ''').fetchall():
         bucket = responses.setdefault(r['event_id'], {'going': [], 'interested': [], 'not_going': []})
         bucket.setdefault(r['action'], []).append({'name': r['full_name'], 'lrn': None if role == 'sslg' else r['lrn']})
-    # WHO answered each of this teacher's events: {event_id: {'going': [...], 'interested': [...], 'not_going': [...]}}
-    responses = {}
-    for r in conn.execute('''
-        SELECT er.event_id, er.action, st.full_name, st.lrn
-        FROM event_reactions er
-        JOIN events ev ON ev.id = er.event_id
-        JOIN students st ON st.id = er.student_id
-        WHERE ev.teacher_id = ?
-        ORDER BY st.full_name
-    ''', (t_id,)).fetchall():
-        bucket = responses.setdefault(r['event_id'], {'going': [], 'interested': [], 'not_going': []})
-        bucket.setdefault(r['action'], []).append({'name': r['full_name'], 'lrn': None if role == 'sslg' else r['lrn']})
 
     assignments = conn.execute('SELECT a.*, s.subject_name, s.code FROM assignments a JOIN subjects s ON a.subject_id = s.id WHERE a.teacher_id = ? ORDER BY a.date_posted DESC', (t_id,)).fetchall()
     quizzes = conn.execute('SELECT q.*, s.subject_name FROM quizzes q JOIN subjects s ON q.subject_id = s.id WHERE q.teacher_id = ? ORDER BY q.date_posted DESC', (t_id,)).fetchall()
@@ -768,12 +766,10 @@ def delete_announcement(ann_id):
         ann = conn.execute('SELECT teacher_id FROM announcements WHERE id = ?', (ann_id,)).fetchone()
         if not ann:
             flash('Announcement not found.')
-        elif ann['teacher_id'] == session['teacher_id'] or is_admin_user(conn):
+        else:
             conn.execute('DELETE FROM announcements WHERE id = ?', (ann_id,))
             conn.commit()
             flash('Announcement deleted.')
-        else:
-            flash('You can only delete your own announcements.')
     finally:
         conn.close()
     return redirect(url_for('teacher_dashboard'))
@@ -1433,13 +1429,11 @@ def delete_event(event_id):
         ev = conn.execute('SELECT teacher_id FROM events WHERE id = ?', (event_id,)).fetchone()
         if not ev:
             flash('Event not found.')
-        elif ev['teacher_id'] == session['teacher_id'] or is_admin_user(conn):
+        else:
             conn.execute('DELETE FROM event_reactions WHERE event_id = ?', (event_id,))
             conn.execute('DELETE FROM events WHERE id = ?', (event_id,))
             conn.commit()
             flash('Event deleted successfully.')
-        else:
-            flash('You can only delete your own events.')
     finally:
         conn.close()
     return redirect(url_for('teacher_dashboard'))
