@@ -410,7 +410,7 @@ def dashboard():
         else:
             current_user_lrn = ''
             current_user_phone = ''
-            current_user_profil
+            current_user_profile_pic = None
             e_pic = None
     except sqlite3.OperationalError:
         conn.execute('ALTER TABLE students ADD COLUMN phone TEXT')
